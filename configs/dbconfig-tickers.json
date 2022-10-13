@@ -1,0 +1,10 @@
+{
+  "development": {
+    "host": "43.200.217.81",
+    "username": "binary",
+    "port": 37239,
+    "password": "Ut5iQQ4Bad4LVARPAq1x",
+    "database": "binopt",
+    "dialect": "mysql"
+  }
+}

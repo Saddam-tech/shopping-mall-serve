@@ -1,0 +1,7 @@
+
+const N_CONFIRMS_FOR_FINALITY_DEF = 6
+
+module.exports= { 
+	N_CONFIRMS_FOR_FINALITY_DEF
+
+}
