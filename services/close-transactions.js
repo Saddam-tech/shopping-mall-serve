@@ -10,7 +10,10 @@ const TX_POLL_OPTIONS = {
 };
 const { sendTelegramBotMessage } = require("../services/telegramMessageBot.js");
 const { moverow }=require('../utils/db')
-const { fetchexchangerates } = require('../tickers/fetch-forex' ) 
+// const { fetchexchangerates } = require('../tickers/fetch-forex' )
+const fetchexchangerates = _=>{
+	return {}
+}  
 //closetransactions({txhash, type:"DEPOSIT", tokentype: tokentype, userid: id, senderaddr, amount})
 const EXPONENT_FOR_PREC_DEF = 6
 const do_exchange_and_deposit=async jdata=>{

@@ -1,7 +1,7 @@
 /* jshint indent: 2 */
 
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('users', {
+  return sequelize.define('userwallets', {
     id: {
       autoIncrement: true,
       type: DataTypes.INTEGER(11).UNSIGNED,
@@ -17,37 +17,24 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.DATE,
       allowNull: true
     },
-    email: {
-      type: DataTypes.STRING(100),
+    uid: {
+      type: DataTypes.INTEGER(11).UNSIGNED,
+      allowNull: false
+    },
+    walletaddress: {
+      type: DataTypes.STRING(300),
       allowNull: true
     },
-    phone: {
-      type: DataTypes.STRING(60),
-      allowNull: true
-    },
-    username: {
-      type: DataTypes.STRING(100),
-      allowNull: true
-    },
-    nickname: {
-      type: DataTypes.STRING(100),
-      allowNull: true
-    },
-    uuid: {
-      type: DataTypes.STRING(60),
-      allowNull: true,
-      defaultValue: sequelize.fn('uuid')
-    },
-    password: {
-      type: DataTypes.STRING(60),
-      allowNull: true
-    },
-    myreferercode: {
-      type: DataTypes.STRING(20),
+    privatekey: {
+      type: DataTypes.STRING(300),
       allowNull: true
     },
     nettype: {
       type: DataTypes.STRING(60),
+      allowNull: true
+    },
+    amount: {
+      type: DataTypes.FLOAT,
       allowNull: true
     },
     nettypeid: {
@@ -56,6 +43,6 @@ module.exports = function(sequelize, DataTypes) {
     }
   }, {
     sequelize,
-    tableName: 'users'
+    tableName: 'userwallets'
   });
 };

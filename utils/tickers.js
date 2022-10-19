@@ -14,7 +14,7 @@ const { Op } = db.Sequelize;
 const { redisconfig } = require("../configs/redis.conf");
 const cliredisa = require("async-redis").createClient(redisconfig);
 const ISFINITE = Number.isFinite;
-const init = async (_) => {
+/** const init = async (_) => {
   let { value } = await db["settings"].findOne({
     raw: true,
     where: { name: "USE_1SEC_TICKER_MODEL", active: 1 },
@@ -37,7 +37,7 @@ const init = async (_) => {
   false && LOGGER("@init", db1secsrc, db5secsrc);
 }; // ( 'USE_1SEC_TICKE R_MODEL' , 'db-tickers')
 init();
-
+*/
 const get_latest_tickers_redis=async _=>{
 	return await cliredisa.hgetall ( 'STREAM_ASSET_PRICE' );
 }

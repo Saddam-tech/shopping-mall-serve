@@ -5,7 +5,7 @@ var http = require('http');
 
 require('dotenv').config();
 console.log(process.env.JWT_SECRET);
-const TESTPORT = 34851 // 30708;
+const TESTPORT = 38505 // 34851 // 30708;
 
 var PORT = normalizePort(process.env.PORT || TESTPORT);
 app.set('port', PORT);
@@ -27,6 +27,7 @@ const server_https = https
     app
   )
   .listen(TESTPORT + 10);
+LOGGER(`https listening ${TESTPORT + 10}` )
 const {
   bindUsernameSocketid,
   unbindsocket,
@@ -169,8 +170,8 @@ const betClosedSocketMessage = async () => {
 
 cron.schedule('1 * * * * *', () => {
   let now_unix = moment().startOf('minute').unix();
-  console.log('@@@@ betClosedSocketMessage @@@@', now_unix);
-	setTimeout (_=>{  betClosedSocketMessage()
+false &&  console.log('@@@@ betClosedSocketMessage @@@@', now_unix);
+	setTimeout (_=>{  // betClosedSocketMessage()
 	} , 1000 ) 
 }); 
 
@@ -201,7 +202,7 @@ const server_https = https
     },
     app
   )
-  .listen(TESTPORT + 10);
+  .listen(TESTPORT + 10 );
 */
 function normalizePort(val) {
   var port = parseInt(val, 10);

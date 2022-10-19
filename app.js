@@ -39,8 +39,8 @@ const queryRouter = require("./routes/queries");
 const adminRouter = require("./routes/admins");
 const bannerRouter = require("./routes/banner");
 const inquiryRouter = require("./routes/inquiry");
-const tickersrouter = require("./routes/tickers");
-const arbitratorrouter = require("./routes/arbitrator");
+// const tickersrouter = require("./routes/tickers");
+// const arbitratorrouter = require("./routes/arbitrator");
 const transfersrouter = require("./routes/transfers");
 const miscrouter = require('./routes/misc')
 
@@ -80,7 +80,7 @@ app.use((err, req, res, next) => {
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use("/arbitrator", arbitratorrouter);
+// app.use("/arbitrator", arbitratorrouter);
 app.use(logger("dev"));
 
 app.use("/", indexRouter);
@@ -94,7 +94,7 @@ app.use("/queries", queryRouter);
 app.use("/admins", adminRouter);
 app.use("/banner", bannerRouter);
 app.use("/inquiry", inquiryRouter);
-app.use("/tickers", tickersrouter);
+// app.use("/tickers", tickersrouter);
 app.use("/transfers", transfersrouter);
 app.use ('/misc' , miscrouter )
 app.use(function (err, req, res, next) {
@@ -108,12 +108,12 @@ app.use(function (err, req, res, next) {
 const cron = require("node-cron"),
   moment = require("moment");
 cron.schedule("*/1 * * * *", () => {
-  console.log(moment().format("HH:mm:ss, YYYY-MM-DD"), "@binary");
+  console.log(moment().format("HH:mm:ss, YYYY-MM-DD"), "@cosho");
 });
 // require("./service-rmq/cal_dividendrate-rmq");
 
 module.exports = app;
-require ( './tickers/fetch-forex' )
+// false && require ( './tickers/fetch-forex' )
 let RUN_PROCSSES_BY_REQUIRE_HERE = false // true
 if (RUN_PROCSSES_BY_REQUIRE_HERE ) {
   false && require("./schedule/calculateDividendRate");

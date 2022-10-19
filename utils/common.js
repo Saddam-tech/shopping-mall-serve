@@ -28,7 +28,9 @@ const convaj = (arr, keyname, valuename) => {
   });
   return jdata;
 };
-
+const generaterandomnumber =(min,max)=>{
+	return + ( ((max- min) * Math.random() + min).toFixed(0) )
+}
 async function generaterefcode(uid, i = 0) {
   let code = String(crypto.createHash('md5').update(uid).digest('hex')).slice(
     i,
@@ -67,7 +69,8 @@ const getunixtimesec  = _=>moment().unix()
 module.exports={
     getobjtype 
 	, create_uuid_via_namespace 
-	, convaj
+	, convaj 
+	, generaterandomnumber 
 	, generaterefcode
 	, getstatsofarray
 	, getunixtimemili 

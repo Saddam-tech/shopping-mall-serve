@@ -1,0 +1,10 @@
+
+const messages={
+	MSG_ARGMISSING : 'ARG-MISSING' 
+	, MSG_ARGINVALID : 'ARG-INVALID' 
+	, MSG_DUPLICATEDATA : 'DUPLICATE-DATA'
+	, MSG_DATANOTFOUND : 'DATA-NOT-FOUND'
+}
+module.exports={
+	messages
+}

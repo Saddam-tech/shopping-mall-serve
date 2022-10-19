@@ -1,7 +1,7 @@
 /* jshint indent: 2 */
 
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('items', {
+  return sequelize.define('logsales', {
     id: {
       autoIncrement: true,
       type: DataTypes.INTEGER(11).UNSIGNED,
@@ -17,16 +17,12 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.DATE,
       allowNull: true
     },
-    name: {
-      type: DataTypes.STRING(200),
+    userid: {
+      type: DataTypes.BIGINT,
       allowNull: true
     },
-    seller: {
-      type: DataTypes.STRING(200),
-      allowNull: true
-    },
-    sellrid: {
-      type: DataTypes.INTEGER(10).UNSIGNED,
+    itemid: {
+      type: DataTypes.BIGINT,
       allowNull: true
     },
     uuid: {
@@ -34,32 +30,41 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: true,
       defaultValue: sequelize.fn('uuid')
     },
-    description: {
-      type: DataTypes.TEXT,
+    storehouseid: {
+      type: DataTypes.BIGINT,
       allowNull: true
     },
-    image00: {
-      type: DataTypes.STRING(500),
+    quantity: {
+      type: DataTypes.INTEGER(10).UNSIGNED,
+      allowNull: true,
+      comment: 'qty sold'
+    },
+    unitprice: {
+      type: DataTypes.STRING(20),
       allowNull: true
     },
-    image01: {
-      type: DataTypes.STRING(500),
+    paymeansname: {
+      type: DataTypes.STRING(60),
       allowNull: true
     },
-    image02: {
-      type: DataTypes.STRING(500),
+    paymeansaddress: {
+      type: DataTypes.STRING(80),
       allowNull: true
     },
-    image03: {
-      type: DataTypes.STRING(500),
+    txhash: {
+      type: DataTypes.STRING(80),
       allowNull: true
     },
-    image04: {
-      type: DataTypes.STRING(500),
+    status: {
+      type: DataTypes.INTEGER(4),
+      allowNull: true
+    },
+    merchantid: {
+      type: DataTypes.BIGINT,
       allowNull: true
     }
   }, {
     sequelize,
-    tableName: 'items'
+    tableName: 'logsales'
   });
 };

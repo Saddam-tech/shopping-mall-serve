@@ -1,7 +1,7 @@
 /* jshint indent: 2 */
 
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('users', {
+  return sequelize.define('carriers', {
     id: {
       autoIncrement: true,
       type: DataTypes.INTEGER(11).UNSIGNED,
@@ -17,45 +17,32 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.DATE,
       allowNull: true
     },
-    email: {
-      type: DataTypes.STRING(100),
+    name: {
+      type: DataTypes.STRING(60),
       allowNull: true
     },
     phone: {
       type: DataTypes.STRING(60),
       allowNull: true
     },
-    username: {
+    email: {
       type: DataTypes.STRING(100),
       allowNull: true
     },
-    nickname: {
-      type: DataTypes.STRING(100),
+    address: {
+      type: DataTypes.STRING(200),
       allowNull: true
     },
     uuid: {
       type: DataTypes.STRING(60),
-      allowNull: true,
-      defaultValue: sequelize.fn('uuid')
+      allowNull: true
     },
-    password: {
+    idcode: {
       type: DataTypes.STRING(60),
-      allowNull: true
-    },
-    myreferercode: {
-      type: DataTypes.STRING(20),
-      allowNull: true
-    },
-    nettype: {
-      type: DataTypes.STRING(60),
-      allowNull: true
-    },
-    nettypeid: {
-      type: DataTypes.INTEGER(10).UNSIGNED,
       allowNull: true
     }
   }, {
     sequelize,
-    tableName: 'users'
+    tableName: 'carriers'
   });
 };
