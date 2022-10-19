@@ -43,6 +43,8 @@ const inquiryRouter = require("./routes/inquiry");
 // const arbitratorrouter = require("./routes/arbitrator");
 const transfersrouter = require("./routes/transfers");
 const miscrouter = require('./routes/misc')
+const merchantsrouter = require( './routes/merchants' )
+const itemsrouter = require ('./routes/items' ) 
 
 const LOGGER = console.log;
 const cors = require("cors");
@@ -97,6 +99,8 @@ app.use("/inquiry", inquiryRouter);
 // app.use("/tickers", tickersrouter);
 app.use("/transfers", transfersrouter);
 app.use ('/misc' , miscrouter )
+app.use ( '/merchants' , merchantsrouter )
+app.use ( '/items' , itemsrouter )  
 app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.error = req.app.get("env") === "development" ? err : {};

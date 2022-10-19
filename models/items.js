@@ -57,6 +57,18 @@ module.exports = function(sequelize, DataTypes) {
     image04: {
       type: DataTypes.STRING(500),
       allowNull: true
+    },
+    manufacturerid: {
+      type: DataTypes.STRING(100),
+      allowNull: true
+    },
+    manufacturer: {
+      type: DataTypes.STRING(100),
+      allowNull: true
+    },
+    mfrid: {
+      type: DataTypes.STRING(100),
+      allowNull: true
     }
   }, {
     sequelize,

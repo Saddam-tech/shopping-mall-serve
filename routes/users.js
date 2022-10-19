@@ -117,6 +117,7 @@ async function createJWT( { jfilter , userinfo } ) {
   let token = jwt.sign(
     {      type: "JWT",
       ...userinfo,
+//			myinfo : userinfo ,
       wallet: mywallet,
     },
     process.env.JWT_SECRET,
@@ -127,7 +128,7 @@ async function createJWT( { jfilter , userinfo } ) {
   console.log("SECREEET", process.env.JWT_SECRET);
   return {
     token : token,
-		userinfo //    ...userinfo,
+		myinfo : userinfo //    ...userinfo,
 		, mywallet
   };
 }
@@ -144,9 +145,22 @@ router.post ( '/login' , async ( req,res)=>{
 	if ( respuser ) {}
 	else { resperr ( res, messages.MSG_DATANOTFOUND ) ; return }
 	let token = await createJWT( { userinfo : respuser  } ) // jfilter ,
-	if ( token?.userinfo?.password ) { 	delete token?.userinfo?.password }
+	if ( token?.myinfo?.password ) { 	delete token?.myinfo?.password }
 	if ( token?.mywallet?.privatekey ) { delete token?.mywallet?.privatekey } 
 	respok ( res, null,null, { respdata : { ... token } } )	
+})
+router.put ( '/myinfo' , auth , async ( req,res)=>{
+	let { id } = req.decoded
+	if ( id ) {}
+	else { resperr ( res , messages.PLEASE_LOGIN ) ; return }
+	let {} = req.body
+	if ( KEYS( 	req.body).length ) {}
+	else { resperr ( res, messages.MSG_ARGMISSING ) ; return } 
+	try { delete req.body?.id
+		delete req.body?.uuid
+	} catch(err){ LOGGER(err) }
+	await db['users' ].update ( { ... req.body } , { where : { id } } ) 
+	respok ( res ) 
 })
 router.post ( '/signup' , async ( req,res)=>{
 	let { email , password } = req.body

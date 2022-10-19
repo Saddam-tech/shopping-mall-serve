@@ -46,6 +46,18 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(60),
       allowNull: true,
       defaultValue: sequelize.fn('uuid')
+    },
+    uid: {
+      type: DataTypes.INTEGER(10).UNSIGNED,
+      allowNull: true
+    },
+    businesslicenseid: {
+      type: DataTypes.STRING(60),
+      allowNull: true
+    },
+    businesslicensenation: {
+      type: DataTypes.STRING(20),
+      allowNull: true
     }
   }, {
     sequelize,

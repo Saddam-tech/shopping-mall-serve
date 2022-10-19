@@ -53,6 +53,15 @@ module.exports = function(sequelize, DataTypes) {
     nettypeid: {
       type: DataTypes.INTEGER(10).UNSIGNED,
       allowNull: true
+    },
+    isadmin: {
+      type: DataTypes.INTEGER(4),
+      allowNull: true,
+      comment: '0: not admin, 1:admin common , >=2:privileged admin'
+    },
+    level: {
+      type: DataTypes.INTEGER(10).UNSIGNED,
+      allowNull: true
     }
   }, {
     sequelize,
