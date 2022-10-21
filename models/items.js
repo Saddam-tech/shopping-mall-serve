@@ -79,6 +79,60 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.FLOAT,
       allowNull: true,
       comment: 'reviewer ratings_ median value'
+    },
+    imagedimensions00: {
+      type: DataTypes.STRING(60),
+      allowNull: true,
+      comment: 'eg) 100X100'
+    },
+    imagedimensions01: {
+      type: DataTypes.STRING(60),
+      allowNull: true,
+      comment: 'eg) 100X100'
+    },
+    imagedimensions02: {
+      type: DataTypes.STRING(60),
+      allowNull: true,
+      comment: 'eg) 100X100'
+    },
+    imagedimensions03: {
+      type: DataTypes.STRING(60),
+      allowNull: true,
+      comment: 'eg) 100X100'
+    },
+    imagedimensions04: {
+      type: DataTypes.STRING(60),
+      allowNull: true,
+      comment: 'eg) 100X100'
+    },
+    categoryid: {
+      type: DataTypes.INTEGER(10).UNSIGNED,
+      allowNull: true
+    },
+    subcategoryid: {
+      type: DataTypes.INTEGER(10).UNSIGNED,
+      allowNull: true
+    },
+    keywords: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+      comment: 'words to be joined by commas'
+    },
+    imageurl00: {
+      type: DataTypes.STRING(500),
+      allowNull: true
+    },
+    imageurl01: {
+      type: DataTypes.STRING(500),
+      allowNull: true
+    },
+    imageurl02: {
+      type: DataTypes.STRING(500),
+      allowNull: true
+    },
+    imageurl03: {
+      type: DataTypes.STRING(500),
+      allowNull: true
     }
   }, {
     sequelize,

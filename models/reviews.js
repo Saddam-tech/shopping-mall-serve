@@ -41,6 +41,10 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.FLOAT,
       allowNull: true,
       comment: 'number of stars : 1~1.5~5'
+    },
+    active: {
+      type: DataTypes.INTEGER(4),
+      allowNull: true
     }
   }, {
     sequelize,

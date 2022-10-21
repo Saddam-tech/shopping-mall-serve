@@ -1,7 +1,7 @@
 /* jshint indent: 2 */
 
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('inquiries', {
+  return sequelize.define('infonettypes', {
     id: {
       autoIncrement: true,
       type: DataTypes.INTEGER(11).UNSIGNED,
@@ -17,32 +17,25 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.DATE,
       allowNull: true
     },
-    uid: {
+    name: {
+      type: DataTypes.STRING(60),
+      allowNull: true
+    },
+    chainid: {
       type: DataTypes.INTEGER(10).UNSIGNED,
       allowNull: true
     },
-    titlename: {
-      type: DataTypes.STRING(300),
-      allowNull: true
-    },
-    contentbody: {
-      type: DataTypes.TEXT,
-      allowNull: true
-    },
-    category: {
-      type: DataTypes.STRING(100),
-      allowNull: true
-    },
-    categoryid: {
-      type: DataTypes.INTEGER(10).UNSIGNED,
-      allowNull: true
-    },
-    issecret: {
+    isprimary: {
       type: DataTypes.INTEGER(4),
       allowNull: true
+    },
+    active: {
+      type: DataTypes.INTEGER(4),
+      allowNull: true,
+      defaultValue: 1
     }
   }, {
     sequelize,
-    tableName: 'inquiries'
+    tableName: 'infonettypes'
   });
 };

@@ -1,7 +1,7 @@
 /* jshint indent: 2 */
 
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('inquiries', {
+  return sequelize.define('reports', {
     id: {
       autoIncrement: true,
       type: DataTypes.INTEGER(11).UNSIGNED,
@@ -29,20 +29,28 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.TEXT,
       allowNull: true
     },
-    category: {
-      type: DataTypes.STRING(100),
-      allowNull: true
-    },
-    categoryid: {
+    itemid: {
       type: DataTypes.INTEGER(10).UNSIGNED,
       allowNull: true
     },
-    issecret: {
-      type: DataTypes.INTEGER(4),
+    itemuuid: {
+      type: DataTypes.STRING(60),
+      allowNull: true
+    },
+    reviewuuid: {
+      type: DataTypes.STRING(60),
+      allowNull: true
+    },
+    reviewid: {
+      type: DataTypes.INTEGER(10).UNSIGNED,
+      allowNull: true
+    },
+    reason: {
+      type: DataTypes.STRING(100),
       allowNull: true
     }
   }, {
     sequelize,
-    tableName: 'inquiries'
+    tableName: 'reports'
   });
 };

@@ -67,6 +67,10 @@ module.exports = function(sequelize, DataTypes) {
     sha256id: {
       type: DataTypes.STRING(80),
       allowNull: true
+    },
+    deliveryfee: {
+      type: DataTypes.STRING(20),
+      allowNull: true
     }
   }, {
     sequelize,

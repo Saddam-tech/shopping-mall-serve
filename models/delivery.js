@@ -55,6 +55,18 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.INTEGER(3).UNSIGNED,
       allowNull: true,
       comment: '0: delivery request made, 1: done , 2: on transit '
+    },
+    streetaddress: {
+      type: DataTypes.STRING(300),
+      allowNull: true
+    },
+    zipcode: {
+      type: DataTypes.STRING(20),
+      allowNull: true
+    },
+    receiverphone: {
+      type: DataTypes.STRING(60),
+      allowNull: true
     }
   }, {
     sequelize,

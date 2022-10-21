@@ -48,6 +48,18 @@ module.exports = function(sequelize, DataTypes) {
     txhash: {
       type: DataTypes.STRING(80),
       allowNull: true
+    },
+    deliveryaddress: {
+      type: DataTypes.STRING(300),
+      allowNull: true
+    },
+    deliveryzip: {
+      type: DataTypes.STRING(20),
+      allowNull: true
+    },
+    deliveryphone: {
+      type: DataTypes.STRING(60),
+      allowNull: true
     }
   }, {
     sequelize,

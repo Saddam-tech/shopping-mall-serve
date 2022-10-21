@@ -70,6 +70,18 @@ module.exports = function(sequelize, DataTypes) {
     isphoneverified: {
       type: DataTypes.INTEGER(4),
       allowNull: true
+    },
+    streetaddress: {
+      type: DataTypes.STRING(300),
+      allowNull: true
+    },
+    zipcode: {
+      type: DataTypes.STRING(20),
+      allowNull: true
+    },
+    receiverphone: {
+      type: DataTypes.STRING(60),
+      allowNull: true
     }
   }, {
     sequelize,

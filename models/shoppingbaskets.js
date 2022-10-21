@@ -1,7 +1,7 @@
 /* jshint indent: 2 */
 
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('inquiries', {
+  return sequelize.define('shoppingbaskets', {
     id: {
       autoIncrement: true,
       type: DataTypes.INTEGER(11).UNSIGNED,
@@ -21,28 +21,32 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.INTEGER(10).UNSIGNED,
       allowNull: true
     },
-    titlename: {
-      type: DataTypes.STRING(300),
-      allowNull: true
-    },
-    contentbody: {
-      type: DataTypes.TEXT,
-      allowNull: true
-    },
-    category: {
-      type: DataTypes.STRING(100),
-      allowNull: true
-    },
-    categoryid: {
+    itemid: {
       type: DataTypes.INTEGER(10).UNSIGNED,
       allowNull: true
     },
-    issecret: {
+    itemuuid: {
+      type: DataTypes.STRING(60),
+      allowNull: true
+    },
+    amount: {
+      type: DataTypes.INTEGER(10).UNSIGNED,
+      allowNull: true
+    },
+    totalprice: {
+      type: DataTypes.STRING(20),
+      allowNull: true
+    },
+    active: {
       type: DataTypes.INTEGER(4),
+      allowNull: true
+    },
+    expiry: {
+      type: DataTypes.BIGINT,
       allowNull: true
     }
   }, {
     sequelize,
-    tableName: 'inquiries'
+    tableName: 'shoppingbaskets'
   });
 };

@@ -56,6 +56,10 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.FLOAT,
       allowNull: true,
       comment: 'of the store_s physical location'
+    },
+    officehours: {
+      type: DataTypes.TEXT,
+      allowNull: true
     }
   }, {
     sequelize,
