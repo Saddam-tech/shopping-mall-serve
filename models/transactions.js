@@ -1,7 +1,7 @@
 /* jshint indent: 2 */
 
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('logsales', {
+  return sequelize.define('transactions', {
     id: {
       autoIncrement: true,
       type: DataTypes.INTEGER(11).UNSIGNED,
@@ -17,59 +17,45 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.DATE,
       allowNull: true
     },
-    userid: {
-      type: DataTypes.BIGINT,
-      allowNull: true
-    },
-    itemid: {
-      type: DataTypes.BIGINT,
-      allowNull: true
-    },
-    uuid: {
-      type: DataTypes.STRING(60),
-      allowNull: true,
-      defaultValue: sequelize.fn('uuid')
-    },
-    storehouseid: {
-      type: DataTypes.BIGINT,
-      allowNull: true
-    },
-    quantity: {
+    uid: {
       type: DataTypes.INTEGER(10).UNSIGNED,
-      allowNull: true,
-      comment: 'qty sold'
-    },
-    unitprice: {
-      type: DataTypes.STRING(20),
-      allowNull: true
-    },
-    paymeansname: {
-      type: DataTypes.STRING(60),
-      allowNull: true
-    },
-    paymeansaddress: {
-      type: DataTypes.STRING(80),
       allowNull: true
     },
     txhash: {
       type: DataTypes.STRING(80),
       allowNull: true
     },
-    status: {
-      type: DataTypes.INTEGER(4),
-      allowNull: true,
-      comment: '0: order placed, 1:fulfilled, 2: there was an issue'
-    },
-    merchantid: {
-      type: DataTypes.BIGINT,
+    nettype: {
+      type: DataTypes.STRING(60),
       allowNull: true
     },
-    sha256id: {
+    amount: {
+      type: DataTypes.FLOAT,
+      allowNull: true
+    },
+    paymeansname: {
       type: DataTypes.STRING(80),
       allowNull: true
+    },
+    from_: {
+      type: DataTypes.STRING(80),
+      allowNull: true
+    },
+    to_: {
+      type: DataTypes.STRING(80),
+      allowNull: true
+    },
+    nettypeid: {
+      type: DataTypes.INTEGER(10).UNSIGNED,
+      allowNull: true
+    },
+    direction: {
+      type: DataTypes.INTEGER(4),
+      allowNull: true,
+      comment: '+1: deposit , -1: withdraw'
     }
   }, {
     sequelize,
-    tableName: 'logsales'
+    tableName: 'transactions'
   });
 };

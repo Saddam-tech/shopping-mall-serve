@@ -1,7 +1,7 @@
 /* jshint indent: 2 */
 
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('logsales', {
+  return sequelize.define('orders', {
     id: {
       autoIncrement: true,
       type: DataTypes.INTEGER(11).UNSIGNED,
@@ -17,59 +17,40 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.DATE,
       allowNull: true
     },
-    userid: {
-      type: DataTypes.BIGINT,
+    uid: {
+      type: DataTypes.INTEGER(10).UNSIGNED,
       allowNull: true
     },
     itemid: {
-      type: DataTypes.BIGINT,
-      allowNull: true
-    },
-    uuid: {
-      type: DataTypes.STRING(60),
-      allowNull: true,
-      defaultValue: sequelize.fn('uuid')
-    },
-    storehouseid: {
-      type: DataTypes.BIGINT,
-      allowNull: true
-    },
-    quantity: {
       type: DataTypes.INTEGER(10).UNSIGNED,
-      allowNull: true,
-      comment: 'qty sold'
+      allowNull: true
     },
     unitprice: {
       type: DataTypes.STRING(20),
       allowNull: true
     },
-    paymeansname: {
-      type: DataTypes.STRING(60),
+    quantity: {
+      type: DataTypes.INTEGER(10).UNSIGNED,
+      allowNull: true
+    },
+    totalprice: {
+      type: DataTypes.STRING(20),
       allowNull: true
     },
     paymeansaddress: {
       type: DataTypes.STRING(80),
       allowNull: true
     },
-    txhash: {
+    paymeansname: {
       type: DataTypes.STRING(80),
       allowNull: true
     },
-    status: {
-      type: DataTypes.INTEGER(4),
-      allowNull: true,
-      comment: '0: order placed, 1:fulfilled, 2: there was an issue'
-    },
-    merchantid: {
-      type: DataTypes.BIGINT,
-      allowNull: true
-    },
-    sha256id: {
+    txhash: {
       type: DataTypes.STRING(80),
       allowNull: true
     }
   }, {
     sequelize,
-    tableName: 'logsales'
+    tableName: 'orders'
   });
 };

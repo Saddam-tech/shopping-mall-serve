@@ -62,13 +62,23 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(100),
       allowNull: true
     },
-    manufacturer: {
+    manufacturername: {
       type: DataTypes.STRING(100),
       allowNull: true
     },
-    mfrid: {
+    manufactureritemid: {
       type: DataTypes.STRING(100),
       allowNull: true
+    },
+    ratingsaverage: {
+      type: DataTypes.FLOAT,
+      allowNull: true,
+      comment: 'reviewer ratings_ average'
+    },
+    ratingsmedian: {
+      type: DataTypes.FLOAT,
+      allowNull: true,
+      comment: 'reviewer ratings_ median value'
     }
   }, {
     sequelize,

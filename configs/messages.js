@@ -6,6 +6,7 @@ const messages={
 	, MSG_DATANOTFOUND : 'DATA-NOT-FOUND'
 	, MSG_PLEASELOGIN : 'PLEASE-LOGIN'
 	, MSG_NOTPRIVILEGED : 'NOT-PRIVILEGED '
+	, MSG_APPROVED : 'APPROVED'
 }
 module.exports={
 	messages

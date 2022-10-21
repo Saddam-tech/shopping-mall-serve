@@ -17,6 +17,7 @@ const cliredisa = require('async-redis').createClient( redisconfig )
 const { findone } =require('../utils/db')
 var router = express.Router();
 
+const MAP_TABLES_POST_METHOD_ALLOWED = {  } // 'inq
 router.post ( '/:tablename' , async (req,res) => { LOGGER( req.body )
 	let { tablename, }=req.params
   let respex= await tableexists(tablename)

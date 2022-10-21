@@ -62,6 +62,14 @@ module.exports = function(sequelize, DataTypes) {
     level: {
       type: DataTypes.INTEGER(10).UNSIGNED,
       allowNull: true
+    },
+    isemailverified: {
+      type: DataTypes.INTEGER(4),
+      allowNull: true
+    },
+    isphoneverified: {
+      type: DataTypes.INTEGER(4),
+      allowNull: true
     }
   }, {
     sequelize,

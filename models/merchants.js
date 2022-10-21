@@ -58,6 +58,19 @@ module.exports = function(sequelize, DataTypes) {
     businesslicensenation: {
       type: DataTypes.STRING(20),
       allowNull: true
+    },
+    status: {
+      type: DataTypes.INTEGER(4),
+      allowNull: true,
+      comment: '0: request, 1:approved, 2:denied'
+    },
+    requester: {
+      type: DataTypes.INTEGER(10).UNSIGNED,
+      allowNull: true
+    },
+    active: {
+      type: DataTypes.INTEGER(4),
+      allowNull: true
     }
   }, {
     sequelize,

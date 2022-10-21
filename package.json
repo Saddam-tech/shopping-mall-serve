@@ -51,6 +51,7 @@
     "sequelize": "^6.21.0",
     "sequelize-auto": "^0.5.3",
     "sharp": "^0.30.7",
+    "shelljs": "^0.8.5",
     "socket.io": "^4.5.1",
     "twilio": "^3.77.3",
     "uuid": "^8.3.2",
