@@ -1,7 +1,7 @@
 /* jshint indent: 2 */
 
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('coupons', {
+  return sequelize.define('logmileages', {
     id: {
       autoIncrement: true,
       type: DataTypes.INTEGER(11).UNSIGNED,
@@ -21,32 +21,40 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.INTEGER(10).UNSIGNED,
       allowNull: true
     },
-    couponid: {
-      type: DataTypes.INTEGER(10).UNSIGNED,
+    type: {
+      type: DataTypes.INTEGER(3).UNSIGNED,
       allowNull: true
     },
-    uuid: {
-      type: DataTypes.STRING(60),
+    typestr: {
+      type: DataTypes.STRING(40),
       allowNull: true
     },
-    startingtimestamp: {
-      type: DataTypes.BIGINT,
+    amountbefore: {
+      type: DataTypes.STRING(20),
       allowNull: true
     },
-    expiry: {
-      type: DataTypes.BIGINT,
+    amountafter: {
+      type: DataTypes.STRING(20),
       allowNull: true
     },
-    active: {
+    amount: {
+      type: DataTypes.STRING(20),
+      allowNull: true
+    },
+    status: {
       type: DataTypes.INTEGER(4),
       allowNull: true
     },
-    code: {
-      type: DataTypes.STRING(100),
+    active: {
+      type: DataTypes.INTEGER(3).UNSIGNED,
+      allowNull: true
+    },
+    note: {
+      type: DataTypes.TEXT,
       allowNull: true
     }
   }, {
     sequelize,
-    tableName: 'coupons'
+    tableName: 'logmileages'
   });
 };

@@ -67,6 +67,26 @@ module.exports = function(sequelize, DataTypes) {
     receiverphone: {
       type: DataTypes.STRING(60),
       allowNull: true
+    },
+    tracknumber: {
+      type: DataTypes.STRING(100),
+      allowNull: true
+    },
+    uuid: {
+      type: DataTypes.STRING(60),
+      allowNull: true
+    },
+    expectedarrival: {
+      type: DataTypes.STRING(20),
+      allowNull: true
+    },
+    expectedarrivalstamp: {
+      type: DataTypes.BIGINT,
+      allowNull: true
+    },
+    statusstr: {
+      type: DataTypes.STRING(60),
+      allowNull: true
     }
   }, {
     sequelize,

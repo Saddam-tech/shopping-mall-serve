@@ -133,6 +133,10 @@ module.exports = function(sequelize, DataTypes) {
     imageurl03: {
       type: DataTypes.STRING(500),
       allowNull: true
+    },
+    htscode: {
+      type: DataTypes.STRING(20),
+      allowNull: true
     }
   }, {
     sequelize,

@@ -82,6 +82,10 @@ module.exports = function(sequelize, DataTypes) {
     receiverphone: {
       type: DataTypes.STRING(60),
       allowNull: true
+    },
+    simplepassword: {
+      type: DataTypes.STRING(20),
+      allowNull: true
     }
   }, {
     sequelize,

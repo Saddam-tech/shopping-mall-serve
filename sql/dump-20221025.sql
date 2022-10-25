@@ -86,6 +86,13 @@ CREATE TABLE `coupons` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `createdat` datetime DEFAULT current_timestamp(),
   `updatedat` datetime DEFAULT NULL ON UPDATE current_timestamp(),
+  `uid` int(10) unsigned DEFAULT NULL,
+  `couponid` int(10) unsigned DEFAULT NULL,
+  `uuid` varchar(60) DEFAULT NULL,
+  `startingtimestamp` bigint(20) unsigned DEFAULT NULL,
+  `expiry` bigint(20) unsigned DEFAULT NULL,
+  `active` tinyint(4) DEFAULT NULL,
+  `code` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -122,6 +129,11 @@ CREATE TABLE `delivery` (
   `streetaddress` varchar(300) DEFAULT NULL,
   `zipcode` varchar(20) DEFAULT NULL,
   `receiverphone` varchar(60) DEFAULT NULL,
+  `tracknumber` varchar(100) DEFAULT NULL,
+  `uuid` varchar(60) DEFAULT NULL,
+  `expectedarrival` varchar(20) DEFAULT NULL,
+  `expectedarrivalstamp` bigint(20) unsigned DEFAULT NULL,
+  `statusstr` varchar(60) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -225,6 +237,34 @@ LOCK TABLES `infocategory` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `infocoupons`
+--
+
+DROP TABLE IF EXISTS `infocoupons`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `infocoupons` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `createdat` datetime DEFAULT current_timestamp(),
+  `updatedat` datetime DEFAULT NULL ON UPDATE current_timestamp(),
+  `uuid` varchar(60) DEFAULT NULL,
+  `name` varchar(100) DEFAULT NULL,
+  `description` text DEFAULT NULL,
+  `code` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `infocoupons`
+--
+
+LOCK TABLES `infocoupons` WRITE;
+/*!40000 ALTER TABLE `infocoupons` DISABLE KEYS */;
+/*!40000 ALTER TABLE `infocoupons` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `infonettypes`
 --
 
@@ -282,6 +322,34 @@ CREATE TABLE `infopaymeans` (
 LOCK TABLES `infopaymeans` WRITE;
 /*!40000 ALTER TABLE `infopaymeans` DISABLE KEYS */;
 /*!40000 ALTER TABLE `infopaymeans` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `infouserlevels`
+--
+
+DROP TABLE IF EXISTS `infouserlevels`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `infouserlevels` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `createdat` datetime DEFAULT current_timestamp(),
+  `updatedat` datetime DEFAULT NULL ON UPDATE current_timestamp(),
+  `level` tinyint(3) unsigned DEFAULT NULL,
+  `name` varchar(60) DEFAULT NULL,
+  `description` varchar(200) DEFAULT NULL,
+  `uuid` varchar(60) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `infouserlevels`
+--
+
+LOCK TABLES `infouserlevels` WRITE;
+/*!40000 ALTER TABLE `infouserlevels` DISABLE KEYS */;
+/*!40000 ALTER TABLE `infouserlevels` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -380,6 +448,7 @@ CREATE TABLE `items` (
   `imageurl01` varchar(500) DEFAULT NULL,
   `imageurl02` varchar(500) DEFAULT NULL,
   `imageurl03` varchar(500) DEFAULT NULL,
+  `htscode` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -390,8 +459,78 @@ CREATE TABLE `items` (
 
 LOCK TABLES `items` WRITE;
 /*!40000 ALTER TABLE `items` DISABLE KEYS */;
-INSERT INTO `items` VALUES (1,'2022-10-19 08:39:48',NULL,'eco soap(white)',NULL,NULL,'97122265-4f89-11ed-ae0f-0ad9133e76f6',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(2,'2022-10-19 08:40:36',NULL,'eco soap(white)',NULL,NULL,'b41088f9-4f89-11ed-ae0f-0ad9133e76f6',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(3,'2022-10-19 08:49:28',NULL,'eco soap(pink)',NULL,NULL,'f0ccdee8-4f8a-11ed-ae0f-0ad9133e76f6',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `items` VALUES (1,'2022-10-19 08:39:48',NULL,'eco soap(white)',NULL,NULL,'97122265-4f89-11ed-ae0f-0ad9133e76f6',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(2,'2022-10-19 08:40:36',NULL,'eco soap(white)',NULL,NULL,'b41088f9-4f89-11ed-ae0f-0ad9133e76f6',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),(3,'2022-10-19 08:49:28',NULL,'eco soap(pink)',NULL,NULL,'f0ccdee8-4f8a-11ed-ae0f-0ad9133e76f6',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `items` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `logmileages`
+--
+
+DROP TABLE IF EXISTS `logmileages`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `logmileages` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `createdat` datetime DEFAULT current_timestamp(),
+  `updatedat` datetime DEFAULT NULL ON UPDATE current_timestamp(),
+  `uid` int(10) unsigned DEFAULT NULL,
+  `type` tinyint(3) unsigned DEFAULT NULL,
+  `typestr` varchar(40) DEFAULT NULL,
+  `amountbefore` varchar(20) DEFAULT NULL,
+  `amountafter` varchar(20) DEFAULT NULL,
+  `amount` varchar(20) DEFAULT NULL,
+  `status` tinyint(4) DEFAULT NULL,
+  `active` tinyint(3) unsigned DEFAULT NULL,
+  `note` text DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `logmileages`
+--
+
+LOCK TABLES `logmileages` WRITE;
+/*!40000 ALTER TABLE `logmileages` DISABLE KEYS */;
+/*!40000 ALTER TABLE `logmileages` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `logorders`
+--
+
+DROP TABLE IF EXISTS `logorders`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `logorders` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `createdat` datetime DEFAULT current_timestamp(),
+  `updatedat` datetime DEFAULT NULL ON UPDATE current_timestamp(),
+  `uid` int(10) unsigned DEFAULT NULL,
+  `itemid` int(10) unsigned DEFAULT NULL,
+  `unitprice` varchar(20) DEFAULT NULL,
+  `quantity` int(10) unsigned DEFAULT NULL,
+  `totalprice` varchar(20) DEFAULT NULL,
+  `paymeansaddress` varchar(80) DEFAULT NULL,
+  `paymeansname` varchar(80) DEFAULT NULL,
+  `txhash` varchar(80) DEFAULT NULL,
+  `deliveryaddress` varchar(300) DEFAULT NULL,
+  `deliveryzip` varchar(20) DEFAULT NULL,
+  `deliveryphone` varchar(60) DEFAULT NULL,
+  `uuid` varchar(60) DEFAULT NULL,
+  `sha256id` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `logorders`
+--
+
+LOCK TABLES `logorders` WRITE;
+/*!40000 ALTER TABLE `logorders` DISABLE KEYS */;
+/*!40000 ALTER TABLE `logorders` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -469,6 +608,37 @@ LOCK TABLES `merchants` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `mileages`
+--
+
+DROP TABLE IF EXISTS `mileages`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `mileages` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `createdat` datetime DEFAULT current_timestamp(),
+  `updatedat` datetime DEFAULT NULL ON UPDATE current_timestamp(),
+  `uid` int(10) unsigned DEFAULT NULL,
+  `type` tinyint(3) unsigned DEFAULT NULL,
+  `typestr` varchar(40) DEFAULT NULL,
+  `amount` varchar(20) DEFAULT NULL,
+  `status` tinyint(4) DEFAULT NULL,
+  `active` tinyint(3) unsigned DEFAULT NULL,
+  `note` text DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `mileages`
+--
+
+LOCK TABLES `mileages` WRITE;
+/*!40000 ALTER TABLE `mileages` DISABLE KEYS */;
+/*!40000 ALTER TABLE `mileages` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `orders`
 --
 
@@ -490,6 +660,8 @@ CREATE TABLE `orders` (
   `deliveryaddress` varchar(300) DEFAULT NULL,
   `deliveryzip` varchar(20) DEFAULT NULL,
   `deliveryphone` varchar(60) DEFAULT NULL,
+  `uuid` varchar(60) DEFAULT NULL,
+  `sha256id` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='orders by users';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -562,6 +734,36 @@ LOCK TABLES `promotions` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `qna`
+--
+
+DROP TABLE IF EXISTS `qna`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `qna` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `createdat` datetime DEFAULT current_timestamp(),
+  `updatedat` datetime DEFAULT NULL ON UPDATE current_timestamp(),
+  `question` text DEFAULT NULL,
+  `answer` text DEFAULT NULL,
+  `category` varchar(100) DEFAULT NULL,
+  `categoryid` int(10) unsigned DEFAULT NULL,
+  `writerid` int(10) unsigned DEFAULT NULL,
+  `uuid` varchar(60) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `qna`
+--
+
+LOCK TABLES `qna` WRITE;
+/*!40000 ALTER TABLE `qna` DISABLE KEYS */;
+/*!40000 ALTER TABLE `qna` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `reports`
 --
 
@@ -594,6 +796,37 @@ LOCK TABLES `reports` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `requests`
+--
+
+DROP TABLE IF EXISTS `requests`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `requests` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `createdat` datetime DEFAULT current_timestamp(),
+  `updatedat` datetime DEFAULT NULL ON UPDATE current_timestamp(),
+  `uid` int(10) unsigned DEFAULT NULL,
+  `type` tinyint(3) unsigned DEFAULT NULL,
+  `typestr` varchar(40) DEFAULT NULL,
+  `orderid` int(10) unsigned DEFAULT NULL,
+  `orderuuid` varchar(60) DEFAULT NULL,
+  `status` tinyint(4) DEFAULT NULL,
+  `note` text DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `requests`
+--
+
+LOCK TABLES `requests` WRITE;
+/*!40000 ALTER TABLE `requests` DISABLE KEYS */;
+/*!40000 ALTER TABLE `requests` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `reviews`
 --
 
@@ -622,6 +855,36 @@ CREATE TABLE `reviews` (
 LOCK TABLES `reviews` WRITE;
 /*!40000 ALTER TABLE `reviews` DISABLE KEYS */;
 /*!40000 ALTER TABLE `reviews` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `sessions`
+--
+
+DROP TABLE IF EXISTS `sessions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `sessions` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `createdat` datetime DEFAULT current_timestamp(),
+  `updatedat` datetime DEFAULT NULL ON UPDATE current_timestamp(),
+  `uid` int(10) unsigned DEFAULT NULL,
+  `token` varchar(1000) DEFAULT NULL,
+  `ipaddress` varchar(80) DEFAULT NULL,
+  `logintimestamp` bigint(20) unsigned DEFAULT NULL,
+  `logouttimestamp` bigint(20) unsigned DEFAULT NULL,
+  `device` varchar(200) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `sessions`
+--
+
+LOCK TABLES `sessions` WRITE;
+/*!40000 ALTER TABLE `sessions` DISABLE KEYS */;
+/*!40000 ALTER TABLE `sessions` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -817,6 +1080,39 @@ LOCK TABLES `transactions` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `useractions`
+--
+
+DROP TABLE IF EXISTS `useractions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `useractions` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `createdat` datetime DEFAULT current_timestamp(),
+  `updatedat` datetime DEFAULT NULL ON UPDATE current_timestamp(),
+  `uid` int(10) unsigned DEFAULT NULL,
+  `type` tinyint(3) unsigned DEFAULT NULL,
+  `typestr` varchar(40) DEFAULT NULL,
+  `orderid` int(10) unsigned DEFAULT NULL,
+  `orderuuid` varchar(60) DEFAULT NULL,
+  `itemid` int(10) unsigned DEFAULT NULL,
+  `itemuuid` varchar(60) DEFAULT NULL,
+  `status` tinyint(4) DEFAULT NULL,
+  `note` text DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `useractions`
+--
+
+LOCK TABLES `useractions` WRITE;
+/*!40000 ALTER TABLE `useractions` DISABLE KEYS */;
+/*!40000 ALTER TABLE `useractions` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `userprefs`
 --
 
@@ -871,6 +1167,7 @@ CREATE TABLE `users` (
   `streetaddress` varchar(300) DEFAULT NULL,
   `zipcode` varchar(20) DEFAULT NULL,
   `receiverphone` varchar(60) DEFAULT NULL,
+  `simplepassword` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -881,7 +1178,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (10,'2022-10-19 03:43:49','2022-10-19 07:28:41','cheny5dyh@gmail.com',NULL,NULL,NULL,'3df0bfa7-4f60-11ed-ae0f-0ad9133e76f6','123456','ab6546aaff13e9','BSC_MAINNET',NULL,2,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `users` VALUES (10,'2022-10-19 03:43:49','2022-10-19 07:28:41','cheny5dyh@gmail.com',NULL,NULL,NULL,'3df0bfa7-4f60-11ed-ae0f-0ad9133e76f6','123456','ab6546aaff13e9','BSC_MAINNET',NULL,2,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -926,4 +1223,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-10-21 13:58:28
+-- Dump completed on 2022-10-25  4:13:30

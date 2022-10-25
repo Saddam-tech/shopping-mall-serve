@@ -1,7 +1,7 @@
 /* jshint indent: 2 */
 
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('coupons', {
+  return sequelize.define('sessions', {
     id: {
       autoIncrement: true,
       type: DataTypes.INTEGER(11).UNSIGNED,
@@ -21,32 +21,28 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.INTEGER(10).UNSIGNED,
       allowNull: true
     },
-    couponid: {
-      type: DataTypes.INTEGER(10).UNSIGNED,
+    token: {
+      type: DataTypes.STRING(1000),
       allowNull: true
     },
-    uuid: {
-      type: DataTypes.STRING(60),
+    ipaddress: {
+      type: DataTypes.STRING(80),
       allowNull: true
     },
-    startingtimestamp: {
+    logintimestamp: {
       type: DataTypes.BIGINT,
       allowNull: true
     },
-    expiry: {
+    logouttimestamp: {
       type: DataTypes.BIGINT,
       allowNull: true
     },
-    active: {
-      type: DataTypes.INTEGER(4),
-      allowNull: true
-    },
-    code: {
-      type: DataTypes.STRING(100),
+    device: {
+      type: DataTypes.STRING(200),
       allowNull: true
     }
   }, {
     sequelize,
-    tableName: 'coupons'
+    tableName: 'sessions'
   });
 };
