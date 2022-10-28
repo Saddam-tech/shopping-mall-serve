@@ -137,6 +137,10 @@ module.exports = function(sequelize, DataTypes) {
     htscode: {
       type: DataTypes.STRING(20),
       allowNull: true
+    },
+    salescount: {
+      type: DataTypes.BIGINT,
+      allowNull: true
     }
   }, {
     sequelize,

@@ -120,22 +120,22 @@ module.exports = app;
 // false && require ( './tickers/fetch-forex' )
 let RUN_PROCSSES_BY_REQUIRE_HERE = false // true
 if (RUN_PROCSSES_BY_REQUIRE_HERE ) {
-  false && require("./schedule/calculateDividendRate");
-  false && require("./schedule/closeBets");
-  false && require("./schedule/openbets"); // true &&
+//  false && require("./schedule/calculateDividendRate");
+  //false && require("./schedule/closeBets");
+//  false && require("./schedule/openbets"); // true &&
   //  false && require('./schedule/betting_bot')
-  require("./schedule/delete_timeout_demoUser");
-  require("./services/depositListener_goerli");
+//  require("./schedule/delete_timeout_demoUser");
+//  require("./services/depositListener_goerli");
   /////////////////////
-  require("./tickers/delete-ticker-data");
-  require("./tickers/getLast30pricePoints");
+//  require("./tickers/delete-ticker-data");
+//  require("./tickers/getLast30pricePoints");
   //	require('./tickers/getStreamData_finnhub')
-  require("./tickers/create-candles-05sec");
-  require("./tickers/create-candles-1min");
-  require("./tickers/create-candles-01h");
-  require("./tickers/create-candles-24h");
+//  require("./tickers/create-candles-05sec");
+//  require("./tickers/create-candles-1min");
+//  require("./tickers/create-candles-01h");
+//  require("./tickers/create-candles-24h");
 
-  false && require("./bin/socket_serve-admin-noti");
+//  false && require("./bin/socket_serve-admin-noti");
   // require('./tickers/getStreamData_twelveData.js
   //	require('./tickers/tickerPrice_sec' )
   //require('./tickers/create-candles-1min')

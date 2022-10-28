@@ -24,6 +24,35 @@ const KEYS = Object.keys;
 const { messages } = require('../configs/messages')
 
 const { filehandler } = require("../utils/file-uploads");
+
+router.get ( '/list/:offset/:limit' , async (req,res)=>{
+	let { date0 
+		, date1 
+		, category
+		,	searchkey
+		, offset
+		, limit
+	} = req.query
+	let jfilter = {}
+	if ( searchkey ) { let liker = `%${searchkey}%`
+		jfilter = { [Op.or] : [ 
+				{	name : { [Op.or] : liker } } 
+			, { description : { [Op.or] : liker }} 
+			, { manufacturername : { [Op.or] : liker }} 
+			, { keywords : { [Op.or] : liker }} 
+//			, { category : { [Op.or] : liker }} 
+		] }
+	} else {}
+	let list = await db[ 'items' ].findAll ( { raw: true
+		, 		where : {
+			... jfilter
+		} 
+		,		offset
+		, limit	
+	})
+	let count =await countrows_scalar ( 'items' , jfilter ) 
+	respok ( res, null, null, { list , count } ) 
+})
 router.put ( '/item' , 
   filehandler.fields([
     { name: "image00", maxCount: 1 },

@@ -18,7 +18,7 @@ module.exports={
 }
 
 const init=_=>{
-	db['nettypes'].findAll ( {raw: true,where : {  active : 1}} ).then(resp=>{
+	db['infonettypes'].findAll ( {raw: true,where : {  active : 1}} ).then(resp=>{
 		jnettypes = convaj ( resp , 'name' , 'chainid' )
 	})
 }
