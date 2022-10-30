@@ -22,7 +22,9 @@ const { resolve_nettype } = require("../utils/nettypes");
 const { MIN_ADMIN_LEVEL } = require("../configs/configs");
 const KEYS = Object.keys;
 const { messages } = require("../configs/messages");
-
+const fs = require("fs");
+const shell = require("shelljs");
+const { storefiletoawss3 } = require("../utils/repo-s3");
 const { filehandler } = require("../utils/file-uploads");
 
 router.get("/list/:offset/:limit", async (req, res) => {
@@ -60,19 +62,130 @@ router.put(
     { name: "image02", maxCount: 1 },
     { name: "image03", maxCount: 1 },
     { name: "image04", maxCount: 1 },
-  ]), // , auth
+  ]),
+  //   auth,
   async (req, res) => {
-    let { id, isadmin } = req.decoded;
+    jwt.verify(
+      `${req.headers.authorization}`,
+      process.env.JWT_SECRET,
+      (err, decoded) => {
+        if (err) {
+          throw err;
+        }
+        req.decoded = decoded;
+      }
+    );
+    let { id, isadmin, uuid } = req.decoded;
     if (id) {
     } else {
       resperr(res, messages.MSG_PLEASE_LOGIN);
       return;
     } //	let { isadmin } = await db[ 'users' ].findOne ( {raw : true , where : { id } } )
+    if (!uuid) {
+      resperr(res, "uuid is not defined!");
+      return;
+    }
     if (isadmin && isadmin >= MIN_ADMIN_LEVEL) {
     } else {
       resperr(res, messages.MSG_NOTPRIVILEGED);
       return;
     }
+    let { files } = req;
+    let { image00, image01, image02, image03, image04 } = files;
+    console.log({ image00, image01 });
+    const fullpathname = `/var/www/html/resource/products/${"" + uuid}`;
+    if (!fs.existsSync(fullpathname)) {
+      shell.mkdir("-p", fullpathname);
+    }
+    const image00pathfilename = `/var/www/html/resource/products/${
+      "" + uuid
+    }/image00.${image00[0].filename.split(".")[1]}`;
+    const image01pathfilename = `/var/www/html/resource/products/${
+      "" + uuid
+    }/image01.${image01[0].filename.split(".")[1]}`;
+    const image02pathfilename = `/var/www/html/resource/products/${
+      "" + uuid
+    }/image02.${image02[0].filename.split(".")[1]}`;
+    const image03pathfilename = `/var/www/html/resource/products/${
+      "" + uuid
+    }/image03.${image03[0].filename.split(".")[1]}`;
+    const image04pathfilename = `/var/www/html/resource/products/${
+      "" + uuid
+    }/image04.${image04[0].filename.split(".")[1]}`;
+
+    fs.copyFile("" + image00[0].path, image00pathfilename, async (err) => {
+      if (err) {
+        console.log(err);
+        resperr(res, err);
+      }
+      fs.copyFile("" + image01[0].path, image01pathfilename, async (err) => {
+        if (err) {
+          console.log(err);
+          resperr(res, err);
+        }
+
+        fs.copyFile("" + image02[0].path, image02pathfilename, async (err) => {
+          if (err) {
+            console.log(err);
+            resperr(res, err);
+          }
+          fs.copyFile(
+            "" + image03[0].path,
+            image03pathfilename,
+            async (err) => {
+              if (err) {
+                console.log(err);
+                resperr(res, err);
+              }
+              fs.copyFile(
+                "" + image04[0].path,
+                image04pathfilename,
+                async (err) => {
+                  if (err) {
+                    console.log(err);
+                    resperr(res, err);
+                  }
+
+                  let s3image00resultpath = await storefiletoawss3(
+                    image00pathfilename,
+                    `products/${uuid}`
+                  );
+                  let s3image01resultpath = await storefiletoawss3(
+                    image01pathfilename,
+                    `products/${uuid}`
+                  );
+                  let s3image02resultpath = await storefiletoawss3(
+                    image02pathfilename,
+                    `products/${uuid}`
+                  );
+                  let s3image03resultpath = await storefiletoawss3(
+                    image03pathfilename,
+                    `products/${uuid}`
+                  );
+                  let s3image04resultpath = await storefiletoawss3(
+                    image04pathfilename,
+                    `products/${uuid}`
+                  );
+
+                  await db["items"].update(
+                    {
+                      imageurl00: s3image00resultpath,
+                      imageurl01: s3image01resultpath,
+                      imageurl02: s3image02resultpath,
+                      imageurl03: s3image03resultpath,
+                      imageurl04: s3image04resultpath,
+                    },
+                    { where: { uuid } }
+                  );
+                  respok(res, "Images successfully saved to AWSS3!");
+                  return;
+                }
+              );
+            }
+          );
+        });
+      });
+    });
   }
 );
 router.post("/item", auth, async (req, res) => {
