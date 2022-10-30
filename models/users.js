@@ -86,6 +86,26 @@ module.exports = function(sequelize, DataTypes) {
     simplepassword: {
       type: DataTypes.STRING(20),
       allowNull: true
+    },
+    firstname: {
+      type: DataTypes.STRING(100),
+      allowNull: true
+    },
+    lastname: {
+      type: DataTypes.STRING(100),
+      allowNull: true
+    },
+    fullname: {
+      type: DataTypes.STRING(200),
+      allowNull: true
+    },
+    isallowemail: {
+      type: DataTypes.INTEGER(4),
+      allowNull: true
+    },
+    isallowsms: {
+      type: DataTypes.INTEGER(4),
+      allowNull: true
     }
   }, {
     sequelize,

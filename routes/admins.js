@@ -7,8 +7,8 @@ var crypto = require("crypto");
 const LOGGER = console.log;
 let { Op } = db.Sequelize;
 const moment = require("moment");
-const { redisconfig } = require('../configs/redis.conf' )
-const cliredisa = require("async-redis").createClient( redisconfig );
+const { redisconfig } = require("../configs/redis.conf");
+const cliredisa = require("async-redis").createClient(redisconfig);
 const fs = require("fs");
 const { upload } = require("../utils/multer");
 const { web3 } = require("../configs/configweb3");
@@ -17,7 +17,7 @@ const { I_LEVEL } = require("../configs/userlevel");
 const axios = require("axios");
 const { convaj, generaterefcode } = require("../utils/common");
 const { socket_receiver_ipaddresses } = require("../configs/configs");
-const { resolve_nettype } = require ( '../utils/nettypes' ) 
+const { resolve_nettype } = require("../utils/nettypes");
 
 var router = express.Router();
 const ISFINITE = Number.isFinite;
@@ -160,49 +160,86 @@ const query_betcount_24h = async (userList) => {
   //   return null;
   // }
 };
-const isHex=(num)=> Boolean( ( ''+num).match(/^0x[0-9a-f]+$/i)) ||   Boolean( ( ''+num).match(/^[0-9a-f]+$/i))
-const validatepk =str=> str && (str.length==64 || str.length==66 ) && isHex(str)
-const { jweb3 } =require('../configs/configweb3' )
-const exec = require('child_process').exec;
+const isHex = (num) =>
+  Boolean(("" + num).match(/^0x[0-9a-f]+$/i)) ||
+  Boolean(("" + num).match(/^[0-9a-f]+$/i));
+const validatepk = (str) =>
+  str && (str.length == 64 || str.length == 66) && isHex(str);
+const { jweb3 } = require("../configs/configweb3");
+const exec = require("child_process").exec;
 
-router.all( '/restart-tx-socket/:instid' , async ( req , res)=>{
-	let { instid } =req.params
-	exec ( `pm2 restart dplistener_binance_mainnet_0${instid}` , code=>{
-		LOGGER( code )
-		respok ( res , null,null, { code } )
-	})
-})
-router.post ( '/_________wallet', auth , async ( req,res)=>{ LOGGER( req.body )
-	let { isadmin, isbranch } = req.decoded
-	if ( isadmin == 2 ) {}
-	else { resperr ( res, 'NOT-PRIVILEGED' ) ;return }
-	let { nettype } = resolve_nettype ( req ) 
-	let web3 = jweb3 [ nettype ] ; LOGGER( '@web3' , web3 )
-	let { ADMINPK } = req.body
-	if ( ADMINPK && validatepk ( ADMINPK )	){}
-	else { resperr( res, 'ARG-MISSING-OR-INVALID' ,null, { reason : 'ADMINPK' } ) ; return }
-	await db['settings'].update ( { active : 0 } , { where : { name: 'ADMINPK' , group_: 'CHARGE_WALLET' , subkey : nettype } } )
-	await db['settings'].update ( { active : 0 } , { where : { name: 'ADMINADDR' , group_: 'CHARGE_WALLET' , subkey : nettype } } )
+router.all("/restart-tx-socket/:instid", async (req, res) => {
+  let { instid } = req.params;
+  exec(`pm2 restart dplistener_binance_mainnet_0${instid}`, (code) => {
+    LOGGER(code);
+    respok(res, null, null, { code });
+  });
+});
+router.post("/_________wallet", auth, async (req, res) => {
+  LOGGER(req.body);
+  let { isadmin, isbranch } = req.decoded;
+  if (isadmin == 2) {
+  } else {
+    resperr(res, "NOT-PRIVILEGED");
+    return;
+  }
+  let { nettype } = resolve_nettype(req);
+  let web3 = jweb3[nettype];
+  LOGGER("@web3", web3);
+  let { ADMINPK } = req.body;
+  if (ADMINPK && validatepk(ADMINPK)) {
+  } else {
+    resperr(res, "ARG-MISSING-OR-INVALID", null, { reason: "ADMINPK" });
+    return;
+  }
+  await db["settings"].update(
+    { active: 0 },
+    { where: { name: "ADMINPK", group_: "CHARGE_WALLET", subkey: nettype } }
+  );
+  await db["settings"].update(
+    { active: 0 },
+    { where: { name: "ADMINADDR", group_: "CHARGE_WALLET", subkey: nettype } }
+  );
 
-	let { address} = web3.eth.accounts.privateKeyToAccount( ADMINPK );
-	await db['settings'].create ( { name : 'ADMINPK' , value : ADMINPK , group_: 'CHARGE_WALLET' , subkey : nettype , active : 1 } )
-	await db['settings'].create ( { name : 'ADMINADDR' , value:address , group_: 'CHARGE_WALLET' , subkey : nettype , active : 1 } )
-	respok ( res , 'Modified') 
-})
-router.get ( '/wallet' ,auth , async ( req,res)=>{
-	let { isadmin, isbranch } = req.decoded
-	if ( isadmin==2 ) {}
-	else { resperr ( res, 'NOT-PRIVILEGED' ) ; return }
-	let { nettype } = resolve_nettype ( req ) 
-	let resp = await db['settings'].findAll ( { raw: true , where : { group_: 'CHARGE_WALLET' , subkey : nettype ,active : 1 } } )
+  let { address } = web3.eth.accounts.privateKeyToAccount(ADMINPK);
+  await db["settings"].create({
+    name: "ADMINPK",
+    value: ADMINPK,
+    group_: "CHARGE_WALLET",
+    subkey: nettype,
+    active: 1,
+  });
+  await db["settings"].create({
+    name: "ADMINADDR",
+    value: address,
+    group_: "CHARGE_WALLET",
+    subkey: nettype,
+    active: 1,
+  });
+  respok(res, "Modified");
+});
+router.get("/wallet", auth, async (req, res) => {
+  let { isadmin, isbranch } = req.decoded;
+  if (isadmin == 2) {
+  } else {
+    resperr(res, "NOT-PRIVILEGED");
+    return;
+  }
+  let { nettype } = resolve_nettype(req);
+  let resp = await db["settings"].findAll({
+    raw: true,
+    where: { group_: "CHARGE_WALLET", subkey: nettype, active: 1 },
+  });
 
-	let jresp = convaj ( resp , 'name', 'value' ) 
-	LOGGER( '@resp', nettype , resp, jresp  ) 
-	respok ( res, null,null, { respdata : { 
-		ADMINADDR: jresp[ 'ADMINADDR' ]
-	, ADMINPK : jresp ['ADMINPK' ]
-	}} ) 
-})
+  let jresp = convaj(resp, "name", "value");
+  LOGGER("@resp", nettype, resp, jresp);
+  respok(res, null, null, {
+    respdata: {
+      ADMINADDR: jresp["ADMINADDR"],
+      ADMINPK: jresp["ADMINPK"],
+    },
+  });
+});
 router.get("/dashboard", adminauth, async (req, res) => {
   let userList = await getUserList(req.isadmin);
 
@@ -309,7 +346,8 @@ router.get("/exchangerates", async (req, res) => {
 });
 router.get("/exchange_rate", async (req, res) => {
   let { symbol } = req.query;
-  await axios    .get(
+  await axios
+    .get(
       `https://api.twelvedata.com/exchange_rate?symbol=${symbol}&apikey=c092ff5093bf4eef83897889e96b3ba7`
     )
     .then((resp) => {
@@ -325,21 +363,21 @@ router.post("/notification", (req, res) => {
   let jwttoken;
 });
 
-router.patch("/profile", auth , async (req, res) => {
+router.patch("/profile", auth, async (req, res) => {
   let { name, email, password, walletAddress, walletPK, phone, countryNum } =
     req.body;
-	let { nettype , nettypeid } = resolve_nettype ( { req } )
+  let { nettype, nettypeid } = resolve_nettype({ req });
   await db["users"].update(
     { name, email, password, phone, countryNum },
     { where: { isadmin: 2 } }
   );
   await db["settings"].update(
     { value: walletAddress },
-    { where: { name: "ADMINADDR" , subkey : nettype, active : 1 } }
+    { where: { name: "ADMINADDR", subkey: nettype, active: 1 } }
   );
   await db["settings"].update(
     { value: walletPK },
-    { where: { name: "ADMINPK" , subkey : nettype, active : 1  } }
+    { where: { name: "ADMINPK", subkey: nettype, active: 1 } }
   );
 
   respok(res, "OK");
@@ -447,44 +485,68 @@ let {
   // countrows_scalar,
   findone,
 } = require("../utils/db");
-const STR_DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss'
+const STR_DATE_FORMAT = "YYYY-MM-DDTHH:mm:ss";
 router.get("/rows/betlogs/:offset/:limit", async (req, res) => {
   let { offset, limit } = req.params;
   offset = +offset;
   limit = +limit;
-	let { date0 , date1 , searchkey } =req.query
-	let jfilter ={}
-	if ( date0 ) { date0 = moment(date0).startOf('day').format('YYYY-MM-DDT00:00:00') 
-		jfilter[ 'createdat' ] = { [Op.gte] : date0 } 
-	}
-	if ( date1 ) { date1 = moment( date1).endOf( 'day').format('YYYY-MM-DDT23:59:00' )
-		jfilter[ 'createdat' ] = { [Op.lte] : date1 } }
-	if( date0 && date1  ) {
-		if ( date0 == date1 ) { 				
-			date0 = moment( date0).startOf('day').format( STR_DATE_FORMAT )
-			date1 = moment( date1).endOf( 'day' ).format( STR_DATE_FORMAT )
-		}  else {
-			date0 = moment( date0).format( STR_DATE_FORMAT )
-			date1 = moment( date1).format( STR_DATE_FORMAT ) //		date1 = moment( date1).add(1,'days').format('YYYY-MM-DDT23:59:00' )
-		} // resolve same day start and end dates
-//		date0 =  date0.format( STR_DATE_FORMAT )
-	//	date1 = date1.format( STR_DATE_FORMAT ) //		date1 = moment( date1).add(1,'days').format('YYYY-MM-DDT23:59:00' )
-		let jtmp = {}
-		jtmp= { [Op.or] :  [ { createdat : { [Op.gte ] : date0 } }  , { createdat : { [ Op.lt ] : date1 } } ] }
-		jfilter= { ... jfilter , ... jtmp }
-	}
-	if ( searchkey ) {
-		let listusers = await db['users'].findAll ( {raw: true , where : { email: { [Op.like ] : `%${searchkey}%` } } } )
-		let listassets = await db['assets'].findAll ( {raw:true, where : { APISymbol : { [ Op.like ] : `%${searchkey}%` } } } )
-		listusers = listusers.map ( elem => elem.id )
-		listassets= listassets.map (elem => elem.id )
-		if ( listusers && listusers.length )		{ jfilter[ 'uid' ] = { [Op.in] :  [ ... listusers ] } }	
-		if ( listassets && listassets.length )	{ jfilter[ 'assetId' ] = { [Op.in] : [ ... listassets ]  } }
-//		if ( listusers && listusers.length )		{ jfilter[ 'uid' ] = [ ... listusers ]  }	
-	//	if ( listassets && listassets.length )	{ jfilter[ 'assetId' ] = [ ... listassets ]  }
-	}
+  let { date0, date1, searchkey } = req.query;
+  let jfilter = {};
+  if (date0) {
+    date0 = moment(date0).startOf("day").format("YYYY-MM-DDT00:00:00");
+    jfilter["createdat"] = { [Op.gte]: date0 };
+  }
+  if (date1) {
+    date1 = moment(date1).endOf("day").format("YYYY-MM-DDT23:59:00");
+    jfilter["createdat"] = { [Op.lte]: date1 };
+  }
+  if (date0 && date1) {
+    if (date0 == date1) {
+      date0 = moment(date0).startOf("day").format(STR_DATE_FORMAT);
+      date1 = moment(date1).endOf("day").format(STR_DATE_FORMAT);
+    } else {
+      date0 = moment(date0).format(STR_DATE_FORMAT);
+      date1 = moment(date1).format(STR_DATE_FORMAT); //		date1 = moment( date1).add(1,'days').format('YYYY-MM-DDT23:59:00' )
+    } // resolve same day start and end dates
+    //		date0 =  date0.format( STR_DATE_FORMAT )
+    //	date1 = date1.format( STR_DATE_FORMAT ) //		date1 = moment( date1).add(1,'days').format('YYYY-MM-DDT23:59:00' )
+    let jtmp = {};
+    jtmp = {
+      [Op.or]: [
+        { createdat: { [Op.gte]: date0 } },
+        { createdat: { [Op.lt]: date1 } },
+      ],
+    };
+    jfilter = { ...jfilter, ...jtmp };
+  }
+  if (searchkey) {
+    let listusers = await db["users"].findAll({
+      raw: true,
+      where: { email: { [Op.like]: `%${searchkey}%` } },
+    });
+    let listassets = await db["assets"].findAll({
+      raw: true,
+      where: { APISymbol: { [Op.like]: `%${searchkey}%` } },
+    });
+    listusers = listusers.map((elem) => elem.id);
+    listassets = listassets.map((elem) => elem.id);
+    if (listusers && listusers.length) {
+      jfilter["uid"] = { [Op.in]: [...listusers] };
+    }
+    if (listassets && listassets.length) {
+      jfilter["assetId"] = { [Op.in]: [...listassets] };
+    }
+    //		if ( listusers && listusers.length )		{ jfilter[ 'uid' ] = [ ... listusers ]  }
+    //	if ( listassets && listassets.length )	{ jfilter[ 'assetId' ] = [ ... listassets ]  }
+  }
   db["betlogs"]
-    .findAll({ raw: true, where: { ... jfilter }, offset, limit, order: [["id", "DESC"]] })
+    .findAll({
+      raw: true,
+      where: { ...jfilter },
+      offset,
+      limit,
+      order: [["id", "DESC"]],
+    })
     .then(async (list) => {
       let aemails = [];
       list.forEach((elem) => {
@@ -495,7 +557,7 @@ router.get("/rows/betlogs/:offset/:limit", async (req, res) => {
         return { ...listemails[idx], ...elem };
       });
 
-      let countrows = await countrows_scalar("betlogs", { ... jfilter });
+      let countrows = await countrows_scalar("betlogs", { ...jfilter });
       respok(res, null, null, { list, count: countrows });
     });
 });
@@ -548,16 +610,18 @@ router.get("/sum/rows/:tablename/:fieldname", async (req, res) => {
   }
   // jfilter[fieldname] = fieldval;
 
-  if (date0) {    startDate = moment(date0).format("YYYY-MM-DD HH:mm:ss");
+  if (date0) {
+    startDate = moment(date0).format("YYYY-MM-DD HH:mm:ss");
   }
-  if (date1) {    endDate = moment(date1).format("YYYY-MM-DD HH:mm:ss");
+  if (date1) {
+    endDate = moment(date1).format("YYYY-MM-DD HH:mm:ss");
   }
-	if ( date0 && date1 && date0 == date1 ){
-		date0 = moment( date0 ) .startOf ( 'day' ).format("YYYY-MM-DD HH:mm:ss")
-		date1 = moment( date1 ) .endOf ( 'day' ).format("YYYY-MM-DD HH:mm:ss")
+  if (date0 && date1 && date0 == date1) {
+    date0 = moment(date0).startOf("day").format("YYYY-MM-DD HH:mm:ss");
+    date1 = moment(date1).endOf("day").format("YYYY-MM-DD HH:mm:ss");
     startDate = date0;
     endDate = date1;
-	}
+  }
   db[tablename]
     .findAndCountAll({
       where: {
@@ -598,16 +662,18 @@ router.get("/count/rows/:tablename/:col", async (req, res) => {
   let jfilter = {};
   // jfilter[fieldname] = fieldval;
 
-  if (date0) {    startDate = moment(date0).format("YYYY-MM-DD HH:mm:ss");
+  if (date0) {
+    startDate = moment(date0).format("YYYY-MM-DD HH:mm:ss");
   }
-  if (date1) {    endDate = moment(date1).format("YYYY-MM-DD HH:mm:ss");
+  if (date1) {
+    endDate = moment(date1).format("YYYY-MM-DD HH:mm:ss");
   }
-	if ( date0 && date1 && date0 == date1 ){
-		date0 = moment( date0 ) .startOf ( 'day' ).format("YYYY-MM-DD HH:mm:ss")
-		date1 = moment( date1 ) .endOf ( 'day' ).format("YYYY-MM-DD HH:mm:ss")
+  if (date0 && date1 && date0 == date1) {
+    date0 = moment(date0).startOf("day").format("YYYY-MM-DD HH:mm:ss");
+    date1 = moment(date1).endOf("day").format("YYYY-MM-DD HH:mm:ss");
     startDate = date0;
     endDate = date1;
-	}
+  }
   db[tablename]
     .count({
       where: {
@@ -694,7 +760,8 @@ router.get("/userinfo/:id", adminauth, async (req, res) => {
           } else {
           }
         });
-      await db["referrals"]        .findOne({ where: { referral_uid: id }, raw: true })
+      await db["referrals"]
+        .findOne({ where: { referral_uid: id }, raw: true })
         .then(async (resp) => {
           if (resp) {
             let referer_user = await db["users"].findOne({
@@ -726,7 +793,8 @@ router.get("/userinfo/:id", adminauth, async (req, res) => {
         .then((resp) => {
           return resp.total / 10 ** 6;
         });
-      await db["userwallets"]        .findOne({
+      await db["userwallets"]
+        .findOne({
           where: { uid: id },
           raw: true,
         })
@@ -753,7 +821,7 @@ router.get("/userinfo/:id", adminauth, async (req, res) => {
 
 router.get("/list/users/:offset/:limit", adminauth, async (req, res) => {
   let { offset, limit } = req.params;
-  let { date0, date1, filterkey, filterval, searchkey , nettype } = req.query;
+  let { date0, date1, filterkey, filterval, searchkey, nettype } = req.query;
   offset = +offset;
   limit = +limit;
   let jfilter = {};
@@ -780,11 +848,11 @@ router.get("/list/users/:offset/:limit", adminauth, async (req, res) => {
     };
   }
   if (date0 && date1) {
-		if ( date0 == date1) {
-			date0 = moment( date0 ).startOf( 'day' ).format ( STR_DATE_FORMAT )
-			date1 = moment( date1 ).endOf('day').format ( STR_DATE_FORMAT )
-		}
-		else {}
+    if (date0 == date1) {
+      date0 = moment(date0).startOf("day").format(STR_DATE_FORMAT);
+      date1 = moment(date1).endOf("day").format(STR_DATE_FORMAT);
+    } else {
+    }
     jfilter = {
       ...jfilter,
       createdat: {
@@ -837,10 +905,15 @@ router.get("/list/users/:offset/:limit", adminauth, async (req, res) => {
         el["sum_withdraw"] = sum_withdraw / 10 ** 6;
         el["usd_amount"] = await db["balances"]
           .findOne({ where: { uid: id, typestr: "LIVE" }, raw: true })
-          .then((resp) => {      if(resp){      return resp.total / 10 ** 6;}
-						else { return 0 }
+          .then((resp) => {
+            if (resp) {
+              return resp.total / 10 ** 6;
+            } else {
+              return 0;
+            }
           });
-        await db["userwallets"]          .findOne({
+        await db["userwallets"]
+          .findOne({
             where: { uid: id },
             raw: true,
           })
@@ -872,12 +945,10 @@ router.get("/asset/list/:type", async (req, res) => {
   let { type } = req.params;
   await db["assets"]
     .findAll({
-      where: { groupstr: type, // active: 1 
-				[Op.or] : [ 
-						{ activereel : 1 }
-					, { activebet : 1 } 
-				]
-			},
+      where: {
+        groupstr: type, // active: 1
+        [Op.or]: [{ activereel: 1 }, { activebet: 1 }],
+      },
       raw: true,
     })
     .then((resp) => {
@@ -885,13 +956,21 @@ router.get("/asset/list/:type", async (req, res) => {
     });
 });
 
-router.get(  "/betrounds/list/:asset/:offset/:limit",
-adminauth,
+router.get(
+  "/betrounds/list/:asset/:offset/:limit",
+  adminauth,
   async (req, res) => {
     let { asset, offset, limit } = req.params;
-    let { assetId, date0, date1, searchkey, filterkey, filterval , nettype ,
-			typedemolive
-	 } = req.query;
+    let {
+      assetId,
+      date0,
+      date1,
+      searchkey,
+      filterkey,
+      filterval,
+      nettype,
+      typedemolive,
+    } = req.query;
     let isadmin = req.isadmin;
     let feetype;
     if (isadmin === 2) {
@@ -907,7 +986,9 @@ adminauth,
     limit = +limit;
     let jfilter = {};
 
-	if ( nettype ) { jfilter [ 'nettype' ] =nettype } 
+    if (nettype) {
+      jfilter["nettype"] = nettype;
+    }
     if (filterkey && filterval) {
       jfilter[filterkey] = filterval;
     }
@@ -928,9 +1009,11 @@ adminauth,
       };
     }
     if (date0 && date1) {
-			if ( date0 == date1 ) { 
-				date0 = moment( date0).startOf('day').format ( STR_DATE_FORMAT) 
-				date1 = moment( date1).endOf( 'day' ).format ( STR_DATE_FORMAT)			}  else {} // resolve same day start and end dates
+      if (date0 == date1) {
+        date0 = moment(date0).startOf("day").format(STR_DATE_FORMAT);
+        date1 = moment(date1).endOf("day").format(STR_DATE_FORMAT);
+      } else {
+      } // resolve same day start and end dates
       jfilter = {
         ...jfilter,
         createdat: {
@@ -959,19 +1042,23 @@ adminauth,
       });
       jfilter = { ...jfilter, assetId: { [Op.in]: list } };
     }
-		if ( typedemolive ){
-			switch ( typedemolive ) {
-				case 'DEMO' : 
-				case 'LIVE' : 		jfilter= { ... jfilter , type : typedemolive }
-				break
-				case 'ALL' : 			jfilter= { ... jfilter  }
-				break
-				default :  				jfilter= { ... jfilter  }
-				break
-			}
-		}
+    if (typedemolive) {
+      switch (typedemolive) {
+        case "DEMO":
+        case "LIVE":
+          jfilter = { ...jfilter, type: typedemolive };
+          break;
+        case "ALL":
+          jfilter = { ...jfilter };
+          break;
+        default:
+          jfilter = { ...jfilter };
+          break;
+      }
+    }
     // console.log('jfilter', jfilter);
-    await db["logrounds"]      .findAndCountAll({
+    await db["logrounds"]
+      .findAndCountAll({
         where: {
           ...jfilter,
         },
@@ -1056,18 +1143,19 @@ adminauth,
   }
 );
 
-router.get(  "/round/log/:assetId/:expiry/:offset/:limit",
+router.get(
+  "/round/log/:assetId/:expiry/:offset/:limit",
   adminauth,
   async (req, res) => {
     let userList = await getUserList(req.isadmin);
     let jfilter = { uid: { [Op.in]: userList } };
     let { assetId, expiry, offset, limit } = req.params;
-		let { nettype , nettypeid } = resolve_nettype ({ req } )
+    let { nettype, nettypeid } = resolve_nettype({ req });
     offset = +offset;
     limit = +limit;
     await db["betlogs"]
       .findAndCountAll({
-        where: { ...jfilter, nettype , assetId, expiry , nettypeid },
+        where: { ...jfilter, nettype, assetId, expiry, nettypeid },
         raw: true,
       })
       .then((resp) => {
@@ -1117,7 +1205,7 @@ router.get("/asset/list/:offset/:limit", adminauth, async (req, res) => {
 router.get("/branch/:offset/:limit/:orderkey/:orderval", async (req, res) => {
   let { offset, limit, orderkey, orderval } = req.params;
   let { date0, date1, filterkey, filterval, searchkey } = req.query;
-	let { nettype , nettypeid } = resolve_nettype ({ req } )
+  let { nettype, nettypeid } = resolve_nettype({ req });
   offset = +offset;
   limit = +limit;
   let jfilter = {};
@@ -1141,11 +1229,11 @@ router.get("/branch/:offset/:limit/:orderkey/:orderval", async (req, res) => {
     };
   }
   if (date0 && date1) {
-		if ( date0 == date1) {
-			date0 = moment( date0 ).startOf( 'day' )	 .format ( STR_DATE_FORMAT )
-			date1 = moment( date1 ).endOf('day') .format ( STR_DATE_FORMAT )
-		}
-		else {}
+    if (date0 == date1) {
+      date0 = moment(date0).startOf("day").format(STR_DATE_FORMAT);
+      date1 = moment(date1).endOf("day").format(STR_DATE_FORMAT);
+    } else {
+    }
     jfilter = {
       ...jfilter,
       createdat: {
@@ -1167,7 +1255,8 @@ router.get("/branch/:offset/:limit/:orderkey/:orderval", async (req, res) => {
   db["users"]
     .findAndCountAll({
       where: {
-        ...jfilter, nettype
+        ...jfilter,
+        nettype,
       },
       order: [[orderkey, orderval]],
       raw: true,
@@ -1212,7 +1301,7 @@ router.patch("/fee/setting/:level", async (req, res) => {
 
 router.get("/levels", async (req, res) => {
   let dispLevelStr = ["Bronze", "Silver", "Gold", "Diamond"];
-	let { nettype , nettypeid } = resolve_nettype ({ req } )
+  let { nettype, nettypeid } = resolve_nettype({ req });
   await db["levelsettings"].findAll({ raw: true }).then(async (resp) => {
     let level_user_count = [0, 0, 0, 0];
     let promises = resp.map(async (el) => {
@@ -1228,7 +1317,7 @@ router.get("/levels", async (req, res) => {
         });
       await db["users"]
         .findAll({
-          where: { level , nettype },
+          where: { level, nettype },
           raw: true,
         })
         .then((resp) => {
@@ -1278,11 +1367,11 @@ router.get("/level/fee", async (req, res) => {
     });
 });
 
-const EXPONENT_FOR_PREC_DEF = 6 
+const EXPONENT_FOR_PREC_DEF = 6;
 router.get("/user/levels", async (req, res) => {
   let start_month = moment().subtract("months").startOf("month");
   let end_month = moment().subtract("months").endOf("month");
-	let { nettype , nettypeid } = resolve_nettype ({ req } )
+  let { nettype, nettypeid } = resolve_nettype({ req });
   // 로그인 횟수, 베팅 수, 베팅 금액, 수익, 손실, 원금
   let result = {};
   for (let i = 0; i < 4; i++) {
@@ -1294,7 +1383,7 @@ router.get("/user/levels", async (req, res) => {
     let total_balance = 0;
     await db["users"]
       .findAndCountAll({
-        where: { active: 1, level: i , nettype },
+        where: { active: 1, level: i, nettype },
         raw: true,
       })
       .then(async (resp) => {
@@ -1318,7 +1407,8 @@ router.get("/user/levels", async (req, res) => {
             });
           await db["betlogs"]
             .count({
-              where: { // nettypeid ,
+              where: {
+                // nettypeid ,
                 createdat: {
                   [Op.gte]: start_month,
                   [Op.lte]: end_month,
@@ -1332,7 +1422,8 @@ router.get("/user/levels", async (req, res) => {
             });
           await db["betlogs"]
             .findAll({
-              where: { // nettypeid ,
+              where: {
+                // nettypeid ,
                 createdat: {
                   [Op.gte]: start_month,
                   [Op.lte]: end_month,
@@ -1347,7 +1438,7 @@ router.get("/user/levels", async (req, res) => {
             .then((resp) => {
               let [{ sum }] = resp;
               if (sum) {
-                sum = sum / 10 ** EXPONENT_FOR_PREC_DEF ;
+                sum = sum / 10 ** EXPONENT_FOR_PREC_DEF;
                 bet_total_amount_month += sum;
               } else {
               }
@@ -1412,11 +1503,15 @@ router.get("/assets/:offset/:limit", (req, res) => {
   let { date0, date1 } = req.query;
   let jfilter = {};
   if (date0) {
-    jfilter = {      ...jfilter,      createdat: { [Op.gte]: moment(date0).format("YYYY-MM-DD HH:mm:ss") },
+    jfilter = {
+      ...jfilter,
+      createdat: { [Op.gte]: moment(date0).format("YYYY-MM-DD HH:mm:ss") },
     };
   }
   if (date1) {
-    jfilter = {      ...jfilter,      createdat: { [Op.lte]: moment(date1).format("YYYY-MM-DD HH:mm:ss") },
+    jfilter = {
+      ...jfilter,
+      createdat: { [Op.lte]: moment(date1).format("YYYY-MM-DD HH:mm:ss") },
     };
   }
   if (date0 && date1) {
@@ -1551,7 +1646,7 @@ router.get("/assets", (req, res) => {
 router.get("/referrals/:isbranch/:offset/:limit", async (req, res) => {
   let { isbranch, offset, limit } = req.params;
   let { date0, date1, filterkey, filterval, searchkey } = req.query;
-	let { nettype , nettypeid } = resolve_nettype ( {req } )
+  let { nettype, nettypeid } = resolve_nettype({ req });
   offset = +offset;
   limit = +limit;
   let jfilter = {};
@@ -1575,10 +1670,11 @@ router.get("/referrals/:isbranch/:offset/:limit", async (req, res) => {
     };
   }
   if (date0 && date1) {
-		if ( date0 == date1 ) { 
-			date0 = moment(date0).startOf('day').format ( STR_DATE_FORMAT )
-			date1 = moment(date1).endOf('day').format ( STR_DATE_FORMAT )	}
-		else {}
+    if (date0 == date1) {
+      date0 = moment(date0).startOf("day").format(STR_DATE_FORMAT);
+      date1 = moment(date1).endOf("day").format(STR_DATE_FORMAT);
+    } else {
+    }
     jfilter = {
       ...jfilter,
       createdat: {
@@ -1627,7 +1723,7 @@ router.get("/referrals/:isbranch/:offset/:limit", async (req, res) => {
         isbranch,
         // isadmin: 0,
         ...jfilter,
-				nettypeid
+        nettypeid,
       },
       offset,
       limit,
@@ -1693,7 +1789,8 @@ router.get("/referrals/:isbranch/:offset/:limit", async (req, res) => {
             }
             el["total_feeamount"] = sum.toFixed(2);
           });
-        await db["userwallets"]          .findOne({
+        await db["userwallets"]
+          .findOne({
             where: { uid: id },
             raw: true,
           })
@@ -1844,7 +1941,7 @@ router.get("/referrals/:isbranch/:offset/:limit", async (req, res) => {
     });
 });
 
-router.get( "/transactions/:isbranch/:type/:offset/:limit" , async (req, res) => {
+router.get("/transactions/:isbranch/:type/:offset/:limit", async (req, res) => {
   // let userList = await getUserList(req.isadmin);
   let userList = await getUserList(2);
   let { isbranch, type, offset, limit } = req.params;
@@ -1924,11 +2021,11 @@ router.get( "/transactions/:isbranch/:type/:offset/:limit" , async (req, res) =>
     };
   }
   if (date0 && date1) {
-		if ( date0 == date1 ) { 
-			date0 = moment(date0).startOf('day').format ( STR_DATE_FORMAT )
-			date1 = moment(date1).endOf( 'day').format ( STR_DATE_FORMAT )	
-		}
-		else {}
+    if (date0 == date1) {
+      date0 = moment(date0).startOf("day").format(STR_DATE_FORMAT);
+      date1 = moment(date1).endOf("day").format(STR_DATE_FORMAT);
+    } else {
+    }
     jfilter = {
       ...jfilter,
       createdat: {
@@ -2075,7 +2172,8 @@ router.get( "/transactions/:isbranch/:type/:offset/:limit" , async (req, res) =>
             // resp.avail = (resp.avail / 10 ** 6).toFixed(2);
             // return resp;
           });
-        el["wallet_address"] = await db["userwallets"]          .findOne({
+        el["wallet_address"] = await db["userwallets"]
+          .findOne({
             where: { uid },
             raw: true,
           })
@@ -2091,7 +2189,7 @@ router.get( "/transactions/:isbranch/:type/:offset/:limit" , async (req, res) =>
 router.get("/notifications/:offset/:limit", async (req, res) => {
   let { offset, limit } = req.params;
   let { date0, date1, filterkey, filterval, searchkey } = req.query;
-	let { nettype , nettypeid } = resolve_nettype ( {req } )
+  let { nettype, nettypeid } = resolve_nettype({ req });
   offset = +offset;
   limit = +limit;
   let jfilter = {};
@@ -2115,11 +2213,11 @@ router.get("/notifications/:offset/:limit", async (req, res) => {
     };
   }
   if (date0 && date1) {
-		if ( date0 == date1 ) { 
-			date0 = moment(date0).startOf('day').format (  STR_DATE_FORMAT ) 
-			date1 = moment(date1).endOf ( 'day').format (  STR_DATE_FORMAT ) // add( 1, 'days').format ( STR_DATE_FORMAT )	
-		}
-		else {}
+    if (date0 == date1) {
+      date0 = moment(date0).startOf("day").format(STR_DATE_FORMAT);
+      date1 = moment(date1).endOf("day").format(STR_DATE_FORMAT); // add( 1, 'days').format ( STR_DATE_FORMAT )
+    } else {
+    }
     jfilter = {
       ...jfilter,
       createdat: {
@@ -2140,7 +2238,8 @@ router.get("/notifications/:offset/:limit", async (req, res) => {
   db["notifications"]
     .findAndCountAll({
       where: {
-        ...jfilter, nettype ,
+        ...jfilter,
+        nettype,
       },
       offset,
       limit,
@@ -2154,21 +2253,23 @@ router.get("/notifications/:offset/:limit", async (req, res) => {
 
 router.post("/enroll/notification", upload.single("img"), (req, res) => {
   let { title, content, writer, enrollDate, exposure } = req.body;
-	let { nettype , nettypeid } = resolve_nettype ( {req } )
+  let { nettype, nettypeid } = resolve_nettype({ req });
   db["notifications"]
     .create({
       title,
       content,
       writer_name: writer,
       enrollDate,
-      exposure, nettype , nettypeid
+      exposure,
+      nettype,
+      nettypeid,
     })
     .then((resp) => {
       respok(res, "OK");
     });
 });
 
-router.get( "/domain/setting/:type" , async (req, res) => {
+router.get("/domain/setting/:type", async (req, res) => {
   let { type } = req.params;
   if (type === "qr") {
     await db["domainsettings"]
@@ -2185,7 +2286,7 @@ router.get( "/domain/setting/:type" , async (req, res) => {
   }
 });
 
-router.post( "/add/domain" , adminauth, async (req, res) => {
+router.post("/add/domain", adminauth, async (req, res) => {
   let { url } = req.body;
   db["domainsettings"]
     .create({
@@ -2202,7 +2303,7 @@ router.get("/inquiry/:offset/:limit", async (req, res) => {
   let { date0, date1, searchkey } = req.query;
   offset = +offset;
   limit = +limit;
-	let { nettype , nettypeid } = resolve_nettype ( {req } )
+  let { nettype, nettypeid } = resolve_nettype({ req });
   let jfilter = {};
   if (date0) {
     jfilter = {
@@ -2221,10 +2322,11 @@ router.get("/inquiry/:offset/:limit", async (req, res) => {
     };
   }
   if (date0 && date1) {
-		if ( date0 == date1 ) { 
-			date0 = moment(date0).startOf('day').format ( STR_DATE_FORMAT )
-			date1 = moment(date1).endOf(  'day').format ( STR_DATE_FORMAT )	}
-		else {}
+    if (date0 == date1) {
+      date0 = moment(date0).startOf("day").format(STR_DATE_FORMAT);
+      date1 = moment(date1).endOf("day").format(STR_DATE_FORMAT);
+    } else {
+    }
     jfilter = {
       ...jfilter,
       createdat: {
@@ -2243,8 +2345,9 @@ router.get("/inquiry/:offset/:limit", async (req, res) => {
   }
   await db["inquiry"]
     .findAndCountAll({
-      where: { ...jfilter , // nettype 
-			},
+      where: {
+        ...jfilter, // nettype
+      },
       raw: true,
       offset,
       limit,
@@ -2375,19 +2478,26 @@ router.get("/status", async (req, res) => {
       (elem) => MAP_STATUS_FIELDS_TO_RETAIN[elem["Variable_name"]]
     );
   }
-	let aproms=[]
-	aproms[ aproms.length ] =getrowcounts();
-	aproms[ aproms.length ] =osutils.drive.info();
-	aproms[ aproms.length ] =cliredisa.get ( 'SOCKETCOUNT' )
-	aproms[ aproms.length ] =cliredisa.hgetall ( 'TX_EVT_RX' )
-	let timenow= moment().unix()
-	let [ jrowcounts , storageinfo , socketcount , networktxevents_rx_time ] = await Promise.all ( aproms )
-  respok(res, null, null, { liststatus, jrowcounts, storageinfo , socketcount , networktxevents_rx_time 
-		, timenow 
-		, timedelta : { 
-				'1' : +timenow -  +networktxevents_rx_time['1'] 
-			, '2' : +timenow -  +networktxevents_rx_time['2'] 
-		 } } );
+  let aproms = [];
+  aproms[aproms.length] = getrowcounts();
+  aproms[aproms.length] = osutils.drive.info();
+  aproms[aproms.length] = cliredisa.get("SOCKETCOUNT");
+  aproms[aproms.length] = cliredisa.hgetall("TX_EVT_RX");
+  let timenow = moment().unix();
+  let [jrowcounts, storageinfo, socketcount, networktxevents_rx_time] =
+    await Promise.all(aproms);
+  respok(res, null, null, {
+    liststatus,
+    jrowcounts,
+    storageinfo,
+    socketcount,
+    networktxevents_rx_time,
+    timenow,
+    timedelta: {
+      1: +timenow - +networktxevents_rx_time["1"],
+      2: +timenow - +networktxevents_rx_time["2"],
+    },
+  });
 });
 
 module.exports = router;

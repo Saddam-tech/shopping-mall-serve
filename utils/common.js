@@ -74,6 +74,8 @@ module.exports={
 	, generaterefcode
 	, getstatsofarray
 	, getunixtimemili 
-  , getunixtimesec 
+  , getunixtimesec
+	, uuidv4
+	, uuidv5 
 }
 
