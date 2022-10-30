@@ -26,9 +26,11 @@ const fs = require("fs");
 const shell = require("shelljs");
 const { storefiletoawss3 } = require("../utils/repo-s3");
 const { filehandler } = require("../utils/file-uploads");
+const { countrows_scalar } = require("../utils/db");
 
 router.get("/list/:offset/:limit", async (req, res) => {
-  let { date0, date1, category, searchkey, offset, limit } = req.query;
+  let { date0, date1, category, searchkey } = req.query;
+  let { offset, limit } = req.params;
   let jfilter = {};
   if (searchkey) {
     let liker = `%${searchkey}%`;
@@ -48,14 +50,14 @@ router.get("/list/:offset/:limit", async (req, res) => {
     where: {
       ...jfilter,
     },
-    offset,
-    limit,
+    // offset,
+    // limit,
   });
   let count = await countrows_scalar("items", jfilter);
   respok(res, null, null, { list, count });
 });
 router.put(
-  "/item",
+  "/item/:uuid",
   filehandler.fields([
     { name: "image00", maxCount: 1 },
     { name: "image01", maxCount: 1 },
@@ -75,13 +77,13 @@ router.put(
         req.decoded = decoded;
       }
     );
-    let { id, isadmin, username } = req.decoded;
+    let { id, isadmin } = req.decoded;
+    let { uuid } = req.params; //itemuuid
     if (id) {
     } else {
       resperr(res, messages.MSG_PLEASE_LOGIN);
       return;
     } //	let { isadmin } = await db[ 'users' ].findOne ( {raw : true , where : { id } } )
-    let uuid = uuidv4(); // itemuuid;
     if (isadmin && isadmin >= MIN_ADMIN_LEVEL) {
     } else {
       resperr(res, messages.MSG_NOTPRIVILEGED);
@@ -171,9 +173,8 @@ router.put(
                       imageurl02: s3image02resultpath,
                       imageurl03: s3image03resultpath,
                       imageurl04: s3image04resultpath,
-                      uuid,
                     },
-                    { where: { sellrid: id } }
+                    { where: { sellrid: id, uuid } }
                   );
                   respok(res, uuid, "Images successfully saved to AWSS3!");
                   return;
@@ -210,11 +211,14 @@ router.post("/item", auth, async (req, res) => {
     resperr(res, messages.MSG_ARGMISSING);
     return;
   }
+  let uuid = uuidv4();
   let resp = await db["items"].create({
     sellrid: id,
+    uuid,
     ...req.body,
   });
   respok(res, null, null, {
+    uuid,
     respdata: {
       ...resp.toJSON(),
     },
