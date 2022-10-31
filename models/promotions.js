@@ -40,6 +40,10 @@ module.exports = function(sequelize, DataTypes) {
     deductionunit: {
       type: DataTypes.STRING(20),
       allowNull: true
+    },
+    uuid: {
+      type: DataTypes.STRING(60),
+      allowNull: true
     }
   }, {
     sequelize,
