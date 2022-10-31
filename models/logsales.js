@@ -71,6 +71,10 @@ module.exports = function(sequelize, DataTypes) {
     deliveryfee: {
       type: DataTypes.STRING(20),
       allowNull: true
+    },
+    uid: {
+      type: DataTypes.BIGINT,
+      allowNull: true
     }
   }, {
     sequelize,

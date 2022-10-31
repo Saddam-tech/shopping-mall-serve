@@ -35,7 +35,7 @@ router.get ( '/item/:uuid' , async ( req,res)=>{
 	respok ( res, null,null, { respdata : { ... resp , promotion }  } )
 })
 router.get("/list/:offset/:limit", async (req, res) => {
-  let { date0, date1, category, searchkey } = req.query;
+  let { date0, date1, category, searchkey , filterkey, filterval } = req.query;
   let { offset, limit } = req.params;
   let jfilter = {};
   if (searchkey) {
@@ -51,6 +51,8 @@ router.get("/list/:offset/:limit", async (req, res) => {
     };
   } else {
   }
+	if ( filterkey && filterval ) { jfilter [ filterkey ] = filterval }
+	else {} 
   let list = await db["items"].findAll({
     raw: true,
     where: {
@@ -68,8 +70,7 @@ router.get("/list/:offset/:limit", async (req, res) => {
 	 list = list.map ( ( elem , idx ) => { return { ... elem , promotions : arrpromotions [ idx ] } } )
   respok(res, null, null, { list, count });
 });
-router.put(
-  "/item/:uuid",
+router.put(  "/item/:uuid",
   filehandler.fields([
     { name: "image00", maxCount: 1 },
     { name: "image01", maxCount: 1 },

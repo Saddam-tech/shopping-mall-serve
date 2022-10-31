@@ -35,6 +35,7 @@ const users02Router = require("./routes/users02");
 const transactionsRouter = require("./routes/transactions");
 // const bookmarksRouter = require("./routes/bookmarks");
 const queryRouter = require("./routes/queries");
+const queriesauthrouter = require("./routes/queriesauth");
 // const betRouter = require("./routes/bets");
 const adminRouter = require("./routes/admins");
 const bannerRouter = require("./routes/banner");
@@ -45,6 +46,8 @@ const transfersrouter = require("./routes/transfers");
 const miscrouter = require('./routes/misc')
 const merchantsrouter = require( './routes/merchants' )
 const itemsrouter = require ('./routes/items' ) 
+const shoprouter = require( './routes/shop' ) 
+const physicaladdressesrouter = require( './routes/physicaladdresses' ) 
 
 const LOGGER = console.log;
 const cors = require("cors");
@@ -92,6 +95,7 @@ app.use("/users02", users02Router);
 app.use("/transactions", transactionsRouter);
 // app.use("/bookmarks", bookmarksRouter);
 app.use("/queries", queryRouter);
+app.use ( '/queries-auth' ,queriesauthrouter )
 // app.use("/bets", betRouter);
 app.use("/admins", adminRouter);
 app.use("/banner", bannerRouter);
@@ -101,6 +105,10 @@ app.use("/transfers", transfersrouter);
 app.use ('/misc' , miscrouter )
 app.use ( '/merchants' , merchantsrouter )
 app.use ( '/items' , itemsrouter )  
+app.use ( '/shop' , shoprouter ) 
+app.use ( '/physicaladdresses' , physicaladdressesrouter ) 
+
+ 
 app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.error = req.app.get("env") === "development" ? err : {};
