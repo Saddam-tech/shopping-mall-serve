@@ -36,6 +36,10 @@ module.exports = function(sequelize, DataTypes) {
     expirytimestamp: {
       type: DataTypes.BIGINT,
       allowNull: true
+    },
+    deductionunit: {
+      type: DataTypes.STRING(20),
+      allowNull: true
     }
   }, {
     sequelize,

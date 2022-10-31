@@ -28,6 +28,12 @@ const { storefiletoawss3 } = require("../utils/repo-s3");
 const { filehandler } = require("../utils/file-uploads");
 const { countrows_scalar } = require("../utils/db");
 
+router.get ( '/item/:uuid' , async ( req,res)=>{
+	let { uuid } = req.params
+	let resp = await db[ 'items' ].findOne ( { raw : true , where : { uuid } } )
+	let promotion = await db[ 'promotions' ].findOne ( { raw: true, where : { itemuuid : uuid } } )
+	respok ( res, null,null, { respdata : { ... resp , promotion }  } )
+})
 router.get("/list/:offset/:limit", async (req, res) => {
   let { date0, date1, category, searchkey } = req.query;
   let { offset, limit } = req.params;
@@ -54,6 +60,12 @@ router.get("/list/:offset/:limit", async (req, res) => {
     // limit,
   });
   let count = await countrows_scalar("items", jfilter);
+	let aproms= []
+	list.forEach ( elem => {
+		aproms[ aproms.length ] =db['promotions'].findAll ( { raw: true, where : { itemuuid : elem.uuid } } )
+	})
+	let arrpromotions = await Promise.all ( aproms)
+	 list = list.map ( ( elem , idx ) => { return { ... elem , promotions : arrpromotions [ idx ] } } )
   respok(res, null, null, { list, count });
 });
 router.put(
