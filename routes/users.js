@@ -198,7 +198,7 @@ router.post ( '/signup' , async ( req,res)=>{
 	})
 	respok ( res , 'CREATED' ); return 
 })
-router.get( '/email/code' , async ( req,res)=>{
+router.get( '/verify/emailcode' , async ( req,res)=>{
 	let { email , } = req.query
 	if ( email ) {}
 	else { resperr ( res, messages.MSG_ARGMISSING ) ; return } 
@@ -214,7 +214,7 @@ router.get( '/email/code' , async ( req,res)=>{
 	let expiresinsec = 600
 	if ( respexpires?.value_ ) { expiresinsec = respexpires?.value_ }
 	let expiry = moment().add( expiresinsec , 'seconds' ).unix()  
-	await db['emailverifycodes'].update ( { active : 0 , where : { email } } )
+	await db['emailverifycodes'].update ( { active : 0 } ,{ where : { email } } )
 	await db['emailverifycodes'].create ( { 
 		code
 		, email
