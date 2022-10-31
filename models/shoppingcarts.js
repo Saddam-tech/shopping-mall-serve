@@ -48,6 +48,10 @@ module.exports = function(sequelize, DataTypes) {
     uuid: {
       type: DataTypes.STRING(60),
       allowNull: true
+    },
+    unitprice: {
+      type: DataTypes.STRING(20),
+      allowNull: true
     }
   }, {
     sequelize,

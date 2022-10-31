@@ -48,6 +48,7 @@ const merchantsrouter = require( './routes/merchants' )
 const itemsrouter = require ('./routes/items' ) 
 const shoprouter = require( './routes/shop' ) 
 const physicaladdressesrouter = require( './routes/physicaladdresses' ) 
+const ordersrouter = require ('./routes/orders')
 
 const LOGGER = console.log;
 const cors = require("cors");
@@ -107,7 +108,7 @@ app.use ( '/merchants' , merchantsrouter )
 app.use ( '/items' , itemsrouter )  
 app.use ( '/shop' , shoprouter ) 
 app.use ( '/physicaladdresses' , physicaladdressesrouter ) 
-
+app.use ( '/orders' , ordersrouter )
  
 app.use(function (err, req, res, next) {
   // set locals, only providing error in development
