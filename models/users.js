@@ -110,6 +110,10 @@ module.exports = function(sequelize, DataTypes) {
     simplepw: {
       type: DataTypes.STRING(10),
       allowNull: true
+    },
+    urlprofileimage: {
+      type: DataTypes.STRING(400),
+      allowNull: true
     }
   }, {
     sequelize,

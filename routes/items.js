@@ -28,11 +28,34 @@ const { storefiletoawss3 } = require("../utils/repo-s3");
 const { filehandler } = require("../utils/file-uploads");
 const { countrows_scalar } = require("../utils/db");
 
-router.get ( '/item/:uuid' , async ( req,res)=>{
+router.get ( '/item/:uuid' , auth , async ( req,res)=>{
 	let { uuid } = req.params
-	let resp = await db[ 'items' ].findOne ( { raw : true , where : { uuid } } )
-	let promotion = await db[ 'promotions' ].findOne ( { raw: true, where : { itemuuid : uuid } } )
-	respok ( res, null,null, { respdata : { ... resp , promotion }  } )
+	let aproms=[]
+	let itemuuid = uuid
+	let { id : uid} = req.decoded
+	aproms[ aproms.length ] = db[ 'items' ].findOne ( { raw : true , where : { uuid } } )
+	aproms[ aproms.length ] = db[ 'promotions' ].findOne ( { raw: true, where : { itemuuid } } )
+	aproms[ aproms.length ] = db[ 'reviews' ].findAll ( { raw: true , where : { itemuuid } } ) 
+	aproms[ aproms.length ] = db[ 'qna' ].findAll ({ raw: true , where : { itemuuid } } ) 
+	aproms[ aproms.length ] = db[ 'promotions' ].findAll ({ raw: true , where : { itemuuid } } ) 
+	aproms[ aproms.length ] = db[ 'inventory' ].findAll ( { raw: true, where : { itemuuid } } )
+	if (uid ) {	aproms[ aproms.length ] = db[ 'favorites' ].findOne ( { raw: true, where : { uid, itemuuid } , attributes : ['status'] } ) }
+	else {}
+ 
+	let [ item , promotion , reviews , qna , promotions , inventory , ismyfavorite ] = await Promise.all ( aproms ) 
+	let stores = []
+	if ( inventory && inventory.length ) {
+	} else {} 
+	respok ( res, null,null, { respdata : { ... item
+		, item 
+		, promotion
+		, reviews
+		, qna
+		, promotions
+		, inventory
+		, stores
+		, ismyfavorite
+	 } } )
 })
 router.get("/list/:offset/:limit", async (req, res) => {
   let { date0, date1, category, searchkey , filterkey, filterval } = req.query;

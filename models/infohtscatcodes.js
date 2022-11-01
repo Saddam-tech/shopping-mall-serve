@@ -1,7 +1,7 @@
 /* jshint indent: 2 */
 
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('qna', {
+  return sequelize.define('infohtscatcodes', {
     id: {
       autoIncrement: true,
       type: DataTypes.INTEGER(11).UNSIGNED,
@@ -17,40 +17,28 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.DATE,
       allowNull: true
     },
-    question: {
+    section: {
+      type: DataTypes.STRING(10),
+      allowNull: true
+    },
+    hscode: {
+      type: DataTypes.STRING(15),
+      allowNull: true
+    },
+    description: {
       type: DataTypes.TEXT,
       allowNull: true
     },
-    answer: {
-      type: DataTypes.TEXT,
+    parent: {
+      type: DataTypes.STRING(15),
       allowNull: true
     },
-    category: {
-      type: DataTypes.STRING(100),
-      allowNull: true
-    },
-    categoryid: {
-      type: DataTypes.INTEGER(10).UNSIGNED,
-      allowNull: true
-    },
-    writerid: {
-      type: DataTypes.INTEGER(10).UNSIGNED,
-      allowNull: true
-    },
-    uuid: {
-      type: DataTypes.STRING(60),
-      allowNull: true
-    },
-    itemuuid: {
-      type: DataTypes.STRING(60),
-      allowNull: true
-    },
-    itemid: {
-      type: DataTypes.INTEGER(10).UNSIGNED,
+    level: {
+      type: DataTypes.INTEGER(3).UNSIGNED,
       allowNull: true
     }
   }, {
     sequelize,
-    tableName: 'qna'
+    tableName: 'infohtscatcodes'
   });
 };

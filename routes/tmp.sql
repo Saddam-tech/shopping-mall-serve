@@ -1,3 +1,17 @@
+
+uid         | int(10) unsigned | YES  |     | NULL                |                               |
+| itemid      | int(10) unsigned | YES  |     | NULL                |                               |
+| itemuuid    | varchar(60)      | YES  |     | NULL                |                               |
+| titlename   | varchar(300)     | YES  |     | NULL                |                               |
+| contentbody | text             | YES  |     | NULL                |                               |
+| rating      | float            | YES  |     | NULL                |                               |
+| active      | tinyint(4)       | YES  |     | NULL                |                               |
+| imageurl00  | varchar(500)     | YES  |     | NULL                |                               |
+| imageurl01  | varchar(500)     | YES  |     | NULL                |                               |
+| imageurl02  |
+
+
+
 `orders` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `createdat` datetime DEFAULT current_timestamp(),

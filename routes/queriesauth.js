@@ -1,7 +1,9 @@
 var express = require('express');
 const requestIp = require('request-ip');
 let { respok, resperr } = require('../utils/rest');
-const { getobjtype , convaj } = require('../utils/common');
+const { getobjtype , convaj
+	, uuidv4
+ } = require('../utils/common');
 const jwt = require('jsonwebtoken');
 const { auth } = require('../utils/authMiddleware');
 const db = require('../models');
@@ -17,6 +19,28 @@ const { findone } =require('../utils/db')
 var router = express.Router();
 
 const MAP_TABLES_POST_METHOD_ALLOWED = {  } // 'inq
+
+router.post ( '/create-or-update/:tablename' , auth , async ( req,res)=>{
+	let { id : uid }  = req.decoded
+	if ( uid ) { }
+	else { resperr( res, messages.MSG_PLEASELOGIN ) ; return }
+	let { tablename } = req.params
+	let respex = await tablexists ( tablename ) 
+	if ( respex ) {}
+	else { resperr ( res, messages.MSG_DATANOTFOUND ) ; return }
+	let { key , updatevalues } = req.body 
+	let uuid
+	let resp = await db[ tablename ].findOne ( { raw: true, where : { ... key } } )
+	if ( resp ) {
+		await db[ tablename ].update ( { ... updatevalues } , { where : { id: resp.id } } )
+	} else { 
+		let respfieldex = await fieldexists ( tablename , 'uuid' )  
+		if ( respfieldex ) { updatevalues[ 'uuid' ] = uuidv4() }
+		else 	{}
+		await db[ tablename ].create ( { ... updatevalues , uuid , uid } )
+	}
+	respok ( res ) 
+})
 router.post ( '/:tablename' , auth , async (req,res) => { LOGGER( req.body )
 	let { tablename, }=req.params
   let respex= await tableexists(tablename)
@@ -25,9 +49,16 @@ router.post ( '/:tablename' , auth , async (req,res) => { LOGGER( req.body )
 	let { id : uid } = req.decoded
 	if ( uid ) { }
 	else { resperr ( res, messages.MSG_PLEASELOGIN ) ; return }
-	
-	await db[ tablename ] .create ( {... req.body , uid  } )
-	respok ( res )
+	let uuid
+	let respfieldex = await fieldexists ( tablename , 'uuid' )  
+	if ( respfieldex ) { uuid = uuidv4() 
+		await db[ tablename ] .create ( {... req.body , uid , uuid  } )
+		respok ( res , null,null , { respdata : { uuid } } )
+	}
+	else 	{
+		await db[ tablename ] .create ( {... req.body , uid } )
+		respok ( res )
+	} //	await db[ tablename ] .create ( {... req.body , uid  } )
 })
 router.put ( '/:tablename/:id' , async ( req,res)=>{ LOGGER( req.body )
 	let { tablename, id } = req.params
@@ -249,7 +280,7 @@ router.get( '/rows/:tablename/:fieldname/:fieldval/:offset/:limit/:orderkey/:ord
 );
 const KEYS=Object.keys
 const MAP_TABLES_FORBIDDEN={users : 1 } 
-router.get("/singlerow/:tablename/:fieldname/:fieldval", async (req, res) => {
+router.get( "/singlerow/:tablename/:fieldname/:fieldval" , auth , async (req, res) => {
   let { tablename, fieldname, fieldval } = req.params;
 	if ( MAP_TABLES_FORBIDDEN[ tablename ] ){resperr( res, 'ACCESS-FORBIDDEN' ) ; return } else {}
   if (tablename && fieldname && fieldval) {
@@ -270,9 +301,9 @@ router.get("/singlerow/:tablename/:fieldname/:fieldval", async (req, res) => {
       resperr(res, messages.MSG_DATANOTFOUND);
       return;
     }   
-
     let jfilter = {}; 
     jfilter[fieldname] = fieldval;
+		
     if (req.query && KEYS(req.query).length) {
       let akeys = KEYS(req.query);
       for (let i = 0; i < akeys.length; i++) {
