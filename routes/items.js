@@ -39,10 +39,11 @@ router.get ( '/item/:uuid' , auth , async ( req,res)=>{
 	aproms[ aproms.length ] = db[ 'qna' ].findAll ({ raw: true , where : { itemuuid } } ) 
 	aproms[ aproms.length ] = db[ 'promotions' ].findAll ({ raw: true , where : { itemuuid } } ) 
 	aproms[ aproms.length ] = db[ 'inventory' ].findAll ( { raw: true, where : { itemuuid } } )
+	aproms[ aproms.length ] = countrows_scalar ( 'favorites' , { status : 1 } )
 	if (uid ) {	aproms[ aproms.length ] = db[ 'favorites' ].findOne ( { raw: true, where : { uid, itemuuid } , attributes : ['status'] } ) }
 	else {}
  
-	let [ item , promotion , reviews , qna , promotions , inventory , ismyfavorite ] = await Promise.all ( aproms ) 
+	let [ item , promotion , reviews , qna , promotions , inventory , ismyfavorite , countfavorites ] = await Promise.all ( aproms ) 
 	let stores = []
 	if ( inventory && inventory.length ) {
 	} else {} 
@@ -55,6 +56,7 @@ router.get ( '/item/:uuid' , auth , async ( req,res)=>{
 		, inventory
 		, stores
 		, ismyfavorite
+		, countfavorites
 	 } } )
 })
 router.get("/list/:offset/:limit", async (req, res) => {
