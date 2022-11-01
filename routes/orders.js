@@ -15,7 +15,9 @@ var router = express.Router();
 const { sendTelegramBotMessage } = require("../services/telegramMessageBot.js");
 const { sendeth } = require("../services/sendeth");
 const { supported_net } = require("../configs/configweb3");
-const { convaj, uuidv4 } = require("../utils/common");
+const { convaj, uuidv4 
+	, getunixtimesec
+} = require("../utils/common");
 const { ADDRESSES } = require("../configs/addresses");
 const { getethbalance } = require("../utils/eth");
 const { resolve_nettype } = require("../utils/nettypes");
@@ -26,8 +28,43 @@ const fs = require("fs");
 const shell = require("shelljs");
 const { storefiletoawss3 } = require("../utils/repo-s3");
 const { filehandler } = require("../utils/file-uploads");
-const { countrows_scalar } = require("../utils/db");
+const { countrows_scalar
+	, moverow
+ } = require("../utils/db");
+const { ORDER_STATUS
+	, DELIVERY_STATUS
+ } =require('../configs/const-defs' ) 
 
+router.post( '/shipment' , auth , async ( req,res)=>{
+	let { id : uid } = req.decoded
+	if ( uid ) {}
+	else { resperr( res, messages.MSG_PLEASELOGIN ); return }	
+	let { arrorderuuids , carrierid , tracknumber } = req.body
+	if ( arrorderuuids && arrorderuuids.length ) {}
+	else { resperr ( res , messages.MSG_ARGMISSING , null, { reason : 'arrorderuuids'} ) ; return }
+	if ( carrierid && tracknumber ) {}
+	else { resperr ( res, messages.MSG_ARGMISSING , null , { reason : 'carrierid or tracknumber' } ) ; return }
+	for ( let idx = 0 ; idx<arrorderuuids.length; idx ++ ) {
+		let orderuuid = arrorderuuids [ idx ]
+		let resporder = await db[ 'orders' ].findOne ( { raw: true, where : { uuid : orderuuid  } } )
+		if ( resporder ) {}
+		else { resperr ( res, messages.MSG_DATANOTFOUND ) ; return }
+		await db[ 'orders' ].update ( { status : ORDER_STATUS.ON_DELIVERY  } , { where : { id:resporder.id } } )
+	}
+	let uuid = uuidv4()
+	let timestamp = getunixtimesec()
+	await db['delivery'].create ( {
+		carrierid
+		, requesttimestamp : timestamp
+		, status : 	DELIVERY_STATUS.ON_TRANSIT
+		, carrierid
+		, tracknumber
+		, uuid
+		, statusstr : 'ON_TRANSIT'
+		, orderuuid 
+	})
+	respok ( res, null,null, { respdata : uuid } )	
+})
 router.post( '/shopping-cart' , auth , async ( req,res)=>{
 	let { deliveryaddress , isusedefaultaddress } =req.body
 	let { id : uid} = req.decoded
@@ -61,4 +98,4 @@ router.post( '/shopping-cart' , auth , async ( req,res)=>{
 
 module.exports = router;
 
-// insert into networktoken (name, decimal, contractaddress,networkidnumber, nettype) values ();
+

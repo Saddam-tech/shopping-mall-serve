@@ -10,7 +10,6 @@ var crypto = require('crypto');
 const LOGGER = console.log;
 const { tableexists , fieldexists } = require('../utils/db')
 let { Op } = db.Sequelize;
-const { calculate_dividendrate } = require('../schedule/XXX-calculateDividendRate');
 const axios = require('axios');
 const { redisconfig } = require ( '../configs/redis.conf' )
 const cliredisa = require('async-redis').createClient( redisconfig )
@@ -117,10 +116,6 @@ router.patch('/set/fee', (req, res) => {
   respok(res, 'ok');
 });
 
-router.get('/dividendrate', async (req, res) => {
-  let dividendrate_all = await calculate_dividendrate();
-  respok(res, null, null, { dividendrate_all });
-});
 // const fieldexists = async (_) => true;
 const ISFINITE = Number.isFinite;
 const MAP_ORDER_BY_VALUES = {
