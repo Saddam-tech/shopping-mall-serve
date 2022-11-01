@@ -28,10 +28,10 @@ const { storefiletoawss3 } = require("../utils/repo-s3");
 const { filehandler } = require("../utils/file-uploads");
 const { countrows_scalar } = require("../utils/db");
 
-router.post ( '/shopping-cart/:uuid/:qty' , auth , async ( req,res)=>{
+router.post ( '/shopping-cart/:uuid/:qty' , auth , async ( req,res) => {
 	let { id : uid } = req.decoded
-	if ( uid){}
-	else { resperr ( res, messages.MSG_PLEASELOGIN ) ; return } 
+	if ( uid ) {}
+	else { resperr ( res, messages.MSG_PLEASELOGIN ) ; return }
 	let { uuid : itemuuid , qty} = req.params
 	let uuid = create_uuid_via_namespace ( `${uid}_${itemuuid}`)  
 	let resp = await db['shoppingcarts'].findOne ( { raw: true, where : { uuid } } )

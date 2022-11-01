@@ -136,6 +136,18 @@ const generatewallet=seedword=>{
 	seedword = seedword? seedword : ''
 	return web3.eth.accounts.create(  	seedword + SERVICE_NAME_NOSPACES  );
 }
+
+router.get ( '/myinfo' , auth , async (req,res)=>{
+	let { id } = req.decoded
+	let aproms=[]
+	aproms [ aproms.length ]=  db['users'].findOne ( { raw: true , where : {id} } )
+	aproms [ aproms.length ] = db['userwallets'].findOne( { raw: true , where : {uid : id } } )
+	aproms [ aproms.length ] = db['balances' ].findOne ( { raw: true, where : { uid : id } } ) 
+	aproms [ aproms.length ] = countrows_scalar ('shoppingcarts' , { uid : id } ) //  db['shoppingcarts'].findAll (
+	let [ myinfo , mywallet , balance , countitemsinshoppingcart ]= await Promise.all ( aproms )
+	respok ( res, null,null, { respdata : { myinfo , mywallet , mybalance , countitemsinshoppingcart }  } )
+})
+ 
 router.post ( '/login' , async ( req,res)=>{
 	let { email , password } = req.body
 	let { nettype } =req.query 

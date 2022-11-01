@@ -106,6 +106,10 @@ module.exports = function(sequelize, DataTypes) {
     isallowsms: {
       type: DataTypes.INTEGER(4),
       allowNull: true
+    },
+    simplepw: {
+      type: DataTypes.STRING(10),
+      allowNull: true
     }
   }, {
     sequelize,
