@@ -87,6 +87,14 @@ module.exports = function(sequelize, DataTypes) {
     statusstr: {
       type: DataTypes.STRING(60),
       allowNull: true
+    },
+    orderid: {
+      type: DataTypes.INTEGER(10).UNSIGNED,
+      allowNull: true
+    },
+    orderuuid: {
+      type: DataTypes.STRING(60),
+      allowNull: true
     }
   }, {
     sequelize,
