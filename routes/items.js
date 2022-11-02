@@ -72,9 +72,15 @@ router.get ( '/item/:uuid' , auth , async ( req,res)=>{
 		itemdetailinfo  , // 9
 		salesinfo , // 10
 		ismyfavorite ] = await Promise.all ( aproms ) 
-LOGGER( `@salesinfo` , salesinfo ) 
+	LOGGER( `@salesinfo` , salesinfo ) 
 	let stores = []
+	let aproms02=[]
+LOGGER( `@inventory` , inventory ) 
 	if ( inventory && inventory.length ) {
+		inventory.forEach ( ( elem , idx ) => {
+			aproms02 [ idx ] = db['stores'].findOne ( { raw : true ,where : { uuid : elem.storeuuid }  } )
+		} )
+		stores = await Promise.all ( aproms02 ) 
 	} else {}
 	respok ( res, null,null, { respdata : { ... item
 		, item 

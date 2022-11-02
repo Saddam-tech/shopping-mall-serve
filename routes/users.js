@@ -173,6 +173,7 @@ router.get("/myinfo", auth, async (req, res) => {
     delete myinfo["simplepassword"];
     delete myinfo["simplepw"];
   }
+	if ( mywallet?.privatekey ) { delete mywallet?.privatekey }
   respok(res, null, null, {
     respdata: { myinfo, mywallet, balance, countitemsinshoppingcart },
   });

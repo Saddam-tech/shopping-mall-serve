@@ -44,6 +44,14 @@ module.exports = function(sequelize, DataTypes) {
     active: {
       type: DataTypes.INTEGER(4),
       allowNull: true
+    },
+    isprimary: {
+      type: DataTypes.INTEGER(4),
+      allowNull: true
+    },
+    urllogo: {
+      type: DataTypes.STRING(300),
+      allowNull: true
     }
   }, {
     sequelize,
