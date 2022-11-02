@@ -1,7 +1,7 @@
 /* jshint indent: 2 */
 
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('infopaymeans', {
+  return sequelize.define('iteminfo', {
     id: {
       autoIncrement: true,
       type: DataTypes.INTEGER(11).UNSIGNED,
@@ -17,36 +17,16 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.DATE,
       allowNull: true
     },
-    name: {
+    itemuuid: {
       type: DataTypes.STRING(60),
       allowNull: true
     },
-    address: {
-      type: DataTypes.STRING(80),
-      allowNull: true
-    },
-    nettype: {
-      type: DataTypes.STRING(60),
-      allowNull: true
-    },
-    uuid: {
-      type: DataTypes.STRING(60),
-      allowNull: true
-    },
-    registrar: {
-      type: DataTypes.STRING(60),
-      allowNull: true
-    },
-    registrarid: {
-      type: DataTypes.BIGINT,
-      allowNull: true
-    },
-    active: {
-      type: DataTypes.INTEGER(4),
+    contentbody: {
+      type: DataTypes.TEXT,
       allowNull: true
     }
   }, {
     sequelize,
-    tableName: 'infopaymeans'
+    tableName: 'iteminfo'
   });
 };

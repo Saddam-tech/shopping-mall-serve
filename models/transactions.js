@@ -53,6 +53,19 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.INTEGER(4),
       allowNull: true,
       comment: '+1: deposit , -1: withdraw'
+    },
+    status: {
+      type: DataTypes.INTEGER(3).UNSIGNED,
+      allowNull: true,
+      comment: '1: success, 2: fail'
+    },
+    active: {
+      type: DataTypes.INTEGER(4),
+      allowNull: true
+    },
+    contractaddress: {
+      type: DataTypes.STRING(80),
+      allowNull: true
     }
   }, {
     sequelize,

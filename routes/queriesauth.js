@@ -19,7 +19,39 @@ const { findone } =require('../utils/db')
 var router = express.Router();
 
 const MAP_TABLES_POST_METHOD_ALLOWED = {  } // 'inq
+const KEYS=Object.keys
 
+router.put ( '/toggle/:tablename' , auth , async ( req,res)=>{
+	let { id : uid } = req.decoded
+	if ( uid ) {}
+	else { resperr ( res, messages.MSG_PLEASELOGIN ) ; return } 
+	let { key , targetcolumnname } = req.body
+	if ( key && KEYS ( key ).length && targetcolumnname) {}
+	else { resperr( res, messages.MSG_ARGMISSING ) ; return }
+	let { tablename } = req.params
+	let resptableex = await tableexists ( tablename )
+	if ( resptableex ) {}
+	else { resperr ( res, messages.MSG_DATANOTFOUND ) ; return }
+	let targetstatus 
+	let resprow = await db[ tablename ] .findOne ( { raw: true , where : { ... key } } )
+	if ( resprow ) {
+		let jdata= {}
+		targetstatus = 1 ^ +resprow[ targetcolumnname ]
+		jdata [ targetcolumnname ] = targetstatus 
+		await db[ tablename ].update ( { ... jdata } , { where : { id : resprow.id } } )
+	}
+	else {
+		let jdata={}
+		targetstatus = 1 
+		jdata[ targetcolumnname ]  = targetstatus 
+		await db[ tablename ].create ( {
+			... key 
+			, uid
+			, ... jdata
+		} )
+	}
+	respok ( res , null, null, { respdata : { result : targetstatus , status : targetstatus } } )
+})
 router.post ( '/create-or-update/:tablename' , auth , async ( req,res)=>{
 	let { id : uid }  = req.decoded
 	if ( uid ) { }
@@ -278,7 +310,6 @@ router.get( '/rows/:tablename/:fieldname/:fieldval/:offset/:limit/:orderkey/:ord
     });
   }
 );
-const KEYS=Object.keys
 const MAP_TABLES_FORBIDDEN={users : 1 } 
 router.get( "/singlerow/:tablename/:fieldname/:fieldval" , auth , async (req, res) => {
   let { tablename, fieldname, fieldval } = req.params;

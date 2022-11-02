@@ -33,30 +33,49 @@ router.get ( '/item/:uuid' , auth , async ( req,res)=>{
 	let aproms=[]
 	let itemuuid = uuid
 	let { id : uid} = req.decoded
-	aproms[ aproms.length ] = db[ 'items' ].findOne ( { raw : true , where : { uuid } } )
-	aproms[ aproms.length ] = db[ 'promotions' ].findOne ( { raw: true, where : { itemuuid } } )
-	aproms[ aproms.length ] = db[ 'reviews' ].findAll ( { raw: true , where : { itemuuid } } ) 
-	aproms[ aproms.length ] = db[ 'qna' ].findAll ({ raw: true , where : { itemuuid } } ) 
-	aproms[ aproms.length ] = db[ 'promotions' ].findAll ({ raw: true , where : { itemuuid } } ) 
-	aproms[ aproms.length ] = db[ 'inventory' ].findAll ( { raw: true, where : { itemuuid } } )
-	aproms[ aproms.length ] = countrows_scalar ( 'favorites' , { status : 1 } )
+	aproms[ aproms.length ] = db[ 'items' ].findOne ( { raw : true , where : { uuid } } ) // 0
+	aproms[ aproms.length ] = db[ 'promotions' ].findOne ( { raw: true, where : { itemuuid } } ) // 1 
+
+	aproms[ aproms.length ] = db[ 'reviews' ].findAll ( { raw: true , where : { itemuuid } } ) // 2
+	aproms[ aproms.legnth ] = countrows_scalar ( 'reviews'  , { itemuuid } ) // 3
+
+	aproms[ aproms.length ] = db[ 'qna' ].findAll ({ raw: true , where : { itemuuid } } )  // 4
+	aproms[ aproms.legnth ] = countrows_scalar ( 'qna'  , { itemuuid } ) // 5
+
+	aproms[ aproms.length ] = db[ 'promotions' ].findAll ({ raw: true , where : { itemuuid } } )  // 6
+	aproms[ aproms.length ] = db[ 'inventory' ].findAll ( { raw: true, where : { itemuuid } } ) // 7
+	aproms[ aproms.length ] = countrows_scalar ( 'favorites' , { status : 1 } ) // 8
+
+	aproms[ aproms.length ] = db[ 'iteminfo' ].findOne ( { raw: true, where : { itemuuid } } ) // 9
 	if (uid ) {	aproms[ aproms.length ] = db[ 'favorites' ].findOne ( { raw: true, where : { uid, itemuuid } , attributes : ['status'] } ) }
 	else {}
- 
-	let [ item , promotion , reviews , qna , promotions , inventory , ismyfavorite , countfavorites ] = await Promise.all ( aproms ) 
+	let [ item , // 0
+		promotion 		, // 1 
+		reviews ,  // 2
+		reviewscount ,  // 3
+		qna ,  // 4
+		qnacount ,  // 5
+		promotions , // 6
+		inventory  , // 7
+		countfavorites , // 8
+		itemdetailinfo ,
+		ismyfavorite ] = await Promise.all ( aproms ) 
 	let stores = []
 	if ( inventory && inventory.length ) {
-	} else {} 
+	} else {}
 	respok ( res, null,null, { respdata : { ... item
 		, item 
 		, promotion
 		, reviews
+		, reviewscount
 		, qna
+		, qnacount
 		, promotions
 		, inventory
 		, stores
-		, ismyfavorite
 		, countfavorites
+		, itemdetailinfo
+		, ismyfavorite
 	 } } )
 })
 router.get("/list/:offset/:limit", async (req, res) => {
