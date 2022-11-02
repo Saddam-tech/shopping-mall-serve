@@ -18,12 +18,14 @@ exports.auth = (req, res, next) => { LOGGER( req.headers.authorization )
     );
   } catch (error) {
     if (error.name === 'TokenExpiredError') {
+			LOGGER( `TokenExpiredError`) ; return next() 
       return res.status(419).json({
         code: 419,
         message: 'Token Expired.',
       });
     }
     if (error.name === 'JsonWebTokenError') {
+			LOGGER( `JsonWebTokenError`) ; return next()
       return res.status(401).json({
         code: 401,
         message: 'Token Invalid.',

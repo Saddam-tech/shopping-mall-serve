@@ -27,28 +27,39 @@ const shell = require("shelljs");
 const { storefiletoawss3 } = require("../utils/repo-s3");
 const { filehandler } = require("../utils/file-uploads");
 const { countrows_scalar } = require("../utils/db");
-
+const resolvedummy=async _=>{
+	return null
+}
 router.get ( '/item/:uuid' , auth , async ( req,res)=>{
 	let { uuid } = req.params
 	let aproms=[]
 	let itemuuid = uuid
 	let { id : uid} = req.decoded
-	aproms[ aproms.length ] = db[ 'items' ].findOne ( { raw : true , where : { uuid } } ) // 0
+/**	aproms[ aproms.length ] = db[ 'items' ].findOne ( { raw : true , where : { uuid } } ) // 0
 	aproms[ aproms.length ] = db[ 'promotions' ].findOne ( { raw: true, where : { itemuuid } } ) // 1 
-
 	aproms[ aproms.length ] = db[ 'reviews' ].findAll ( { raw: true , where : { itemuuid } } ) // 2
 	aproms[ aproms.legnth ] = countrows_scalar ( 'reviews'  , { itemuuid } ) // 3
-
 	aproms[ aproms.length ] = db[ 'qna' ].findAll ({ raw: true , where : { itemuuid } } )  // 4
 	aproms[ aproms.legnth ] = countrows_scalar ( 'qna'  , { itemuuid } ) // 5
-
 	aproms[ aproms.length ] = db[ 'promotions' ].findAll ({ raw: true , where : { itemuuid } } )  // 6
 	aproms[ aproms.length ] = db[ 'inventory' ].findAll ( { raw: true, where : { itemuuid } } ) // 7
 	aproms[ aproms.length ] = countrows_scalar ( 'favorites' , { status : 1 } ) // 8
-
 	aproms[ aproms.length ] = db[ 'iteminfo' ].findOne ( { raw: true, where : { itemuuid } } ) // 9
-	if (uid ) {	aproms[ aproms.length ] = db[ 'favorites' ].findOne ( { raw: true, where : { uid, itemuuid } , attributes : ['status'] } ) }
-	else {}
+	aproms[ aproms.length ] = db[ 'sales' ].findOne ( { raw: true, where : { itemuuid } } ) // 10
+*/
+	aproms[ 0 ] = db[ 'items' ].findOne ( { raw : true , where : { uuid } } ) // 0
+	aproms[ 1 ] = db[ 'promotions' ].findOne ( { raw: true, where : { itemuuid } } ) // 1 
+	aproms[ 2 ] = db[ 'reviews' ].findAll ( { raw: true , where : { itemuuid } } ) // 2
+	aproms[ 3 ] = countrows_scalar ( 'reviews'  , { itemuuid } ) // 3
+	aproms[ 4 ] = db[ 'qna' ].findAll ({ raw: true , where : { itemuuid } } )  // 4
+	aproms[ 5 ] = countrows_scalar ( 'qna'  , { itemuuid } ) // 5
+	aproms[ 6 ] = db[ 'promotions' ].findAll ({ raw: true , where : { itemuuid } } )  // 6
+	aproms[ 7 ] = db[ 'inventory' ].findAll ( { raw: true, where : { itemuuid } } ) // 7
+	aproms[ 8 ] = countrows_scalar ( 'favorites' , { status : 1 } ) // 8
+	aproms[ 9 ] = db[ 'iteminfo' ].findOne ( { raw: true, where : { itemuuid } } ) // 9
+	aproms[ 10 ] = db[ 'sales' ].findOne ( { raw: true, where : { itemuuid } } ) // 10
+	if (uid ) {	aproms[ 11 ] = db[ 'favorites' ].findOne ( { raw: true, where : { uid, itemuuid } , attributes : ['status'] } ) } // 11
+	else {	aproms[ 11 ] = resolvedummy() }
 	let [ item , // 0
 		promotion 		, // 1 
 		reviews ,  // 2
@@ -58,8 +69,10 @@ router.get ( '/item/:uuid' , auth , async ( req,res)=>{
 		promotions , // 6
 		inventory  , // 7
 		countfavorites , // 8
-		itemdetailinfo ,
+		itemdetailinfo  , // 9
+		salesinfo , // 10
 		ismyfavorite ] = await Promise.all ( aproms ) 
+LOGGER( `@salesinfo` , salesinfo ) 
 	let stores = []
 	if ( inventory && inventory.length ) {
 	} else {}
@@ -75,6 +88,7 @@ router.get ( '/item/:uuid' , auth , async ( req,res)=>{
 		, stores
 		, countfavorites
 		, itemdetailinfo
+		, salesinfo
 		, ismyfavorite
 	 } } )
 })

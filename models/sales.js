@@ -70,6 +70,36 @@ module.exports = function(sequelize, DataTypes) {
     promotionid: {
       type: DataTypes.BIGINT,
       allowNull: true
+    },
+    itemuuid: {
+      type: DataTypes.STRING(60),
+      allowNull: true
+    },
+    isrefundable: {
+      type: DataTypes.INTEGER(4),
+      allowNull: true
+    },
+    feerefund: {
+      type: DataTypes.STRING(20),
+      allowNull: true
+    },
+    feeexchange: {
+      type: DataTypes.STRING(20),
+      allowNull: true,
+      comment: 'fee to be charged on exchange for another item'
+    },
+    policyfee: {
+      type: DataTypes.TEXT,
+      allowNull: true
+    },
+    policycer: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+      comment: 'policy on cancel,exchanges and refund'
+    },
+    policydelivery: {
+      type: DataTypes.TEXT,
+      allowNull: true
     }
   }, {
     sequelize,
