@@ -149,6 +149,30 @@ module.exports = function(sequelize, DataTypes) {
     ispromotion: {
       type: DataTypes.INTEGER(4),
       allowNull: true
+    },
+    isfeatured: {
+      type: DataTypes.INTEGER(4),
+      allowNull: true
+    },
+    price0: {
+      type: DataTypes.STRING(20),
+      allowNull: true,
+      comment: 'price before adjustment'
+    },
+    price1: {
+      type: DataTypes.STRING(20),
+      allowNull: true,
+      comment: 'price after adjustment'
+    },
+    msrp: {
+      type: DataTypes.STRING(20),
+      allowNull: true,
+      comment: 'msrp'
+    },
+    msrpunit: {
+      type: DataTypes.STRING(60),
+      allowNull: true,
+      comment: 'msrp units'
     }
   }, {
     sequelize,

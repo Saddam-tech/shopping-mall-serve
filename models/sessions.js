@@ -22,7 +22,7 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: true
     },
     token: {
-      type: DataTypes.STRING(1000),
+      type: DataTypes.TEXT,
       allowNull: true
     },
     ipaddress: {

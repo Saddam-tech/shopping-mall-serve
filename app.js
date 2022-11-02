@@ -50,6 +50,7 @@ const shoprouter = require( './routes/shop' )
 const physicaladdressesrouter = require( './routes/physicaladdresses' ) 
 const ordersrouter = require ('./routes/orders')
 const filerouter = require( './routes/file-uploads' ) 
+const salesrouter = require( './routes/sales' ) 
 const LOGGER = console.log;
 const cors = require("cors");
 // view engine setup
@@ -110,6 +111,7 @@ app.use ( '/shop' , shoprouter )
 app.use ( '/physicaladdresses' , physicaladdressesrouter ) 
 app.use ( '/orders' , ordersrouter )
 app.use ( '/files' , filerouter )
+app.use ( '/sales' , salesrouter )
  
 app.use(function (err, req, res, next) {
   // set locals, only providing error in development

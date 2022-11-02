@@ -1,3 +1,13 @@
+promotions
+itemid            | int(10) unsigned    | YES  |     | NULL                |                               |
+| itemuuid          | varchar(60)         | YES  |     | NULL                |                               |
+| deduction         | varchar(20)         | YES  |     | NULL                |                               |
+| startingtimestamp | bigint(20) unsigned | YES  |     | NULL                |                               |
+| expirytimestamp   | bigint(20) unsigned | YES  |     | NULL                |                               |
+| deductionunit     | varchar(20)         | YES  |     | NULL                |                               |
+| uuid              | varchar(60)         | YES  |     | NULL                |                               |
+| price0            | varchar(20)         | YES  |     | NULL                |                               |
+| price1  
 
 uid         | int(10) unsigned | YES  |     | NULL                |                               |
 | itemid      | int(10) unsigned | YES  |     | NULL                |                               |
