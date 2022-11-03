@@ -1,7 +1,7 @@
 /* jshint indent: 2 */
 
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('sessions', {
+  return sequelize.define('withdrawfees', {
     id: {
       autoIncrement: true,
       type: DataTypes.INTEGER(11).UNSIGNED,
@@ -17,36 +17,33 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.DATE,
       allowNull: true
     },
-    uid: {
-      type: DataTypes.INTEGER(10).UNSIGNED,
+    intervalstart: {
+      type: DataTypes.FLOAT,
       allowNull: true
     },
-    token: {
+    intervalend: {
+      type: DataTypes.FLOAT,
+      allowNull: true
+    },
+    amount: {
+      type: DataTypes.STRING(20),
+      allowNull: true
+    },
+    rate: {
+      type: DataTypes.STRING(20),
+      allowNull: true
+    },
+    descrption: {
       type: DataTypes.TEXT,
       allowNull: true
     },
-    ipaddress: {
-      type: DataTypes.STRING(80),
-      allowNull: true
-    },
-    logintimestamp: {
-      type: DataTypes.BIGINT,
-      allowNull: true
-    },
-    logouttimestamp: {
-      type: DataTypes.BIGINT,
-      allowNull: true
-    },
-    device: {
-      type: DataTypes.STRING(200),
-      allowNull: true
-    },
-    email: {
-      type: DataTypes.STRING(100),
-      allowNull: true
+    active: {
+      type: DataTypes.INTEGER(4),
+      allowNull: true,
+      defaultValue: 1
     }
   }, {
     sequelize,
-    tableName: 'sessions'
+    tableName: 'withdrawfees'
   });
 };

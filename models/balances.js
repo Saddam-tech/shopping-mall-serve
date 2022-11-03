@@ -40,6 +40,20 @@ module.exports = function(sequelize, DataTypes) {
     nettypeid: {
       type: DataTypes.INTEGER(10).UNSIGNED,
       allowNull: true
+    },
+    active: {
+      type: DataTypes.INTEGER(4),
+      allowNull: true
+    },
+    type: {
+      type: DataTypes.INTEGER(4),
+      allowNull: true,
+      comment: '1: token , 2: coin , 3: fiat'
+    },
+    typestr: {
+      type: DataTypes.STRING(20),
+      allowNull: true,
+      comment: '1: token , 2: coin , 3: fiat'
     }
   }, {
     sequelize,

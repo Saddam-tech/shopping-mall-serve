@@ -1,7 +1,9 @@
 var express = require("express");
 const requestIp = require("request-ip");
 let { respok, resperr } = require("../utils/rest");
-const { getobjtype, generaterandomnumber } = require("../utils/common");
+const { getobjtype, generaterandomnumber 
+ , getunixtimesec 
+} = require("../utils/common");
 const jwt = require("jsonwebtoken");
 const { auth, softauth } = require("../utils/authMiddleware");
 const db = require("../models");
@@ -22,7 +24,7 @@ const { v4: uuidv4 } = require("uuid");
 const e = require("express");
 const KEYS = Object.keys;
 const ISFINITE = Number.isFinite;
-const { getipaddress } = require("../utils/session");
+const { getipaddress , getuseragent} = require("../utils/session");
 require("dotenv").config({ path: "../.env" });
 const { resolve_nettype } = require("../utils/nettypes");
 const { SERVICE_NAME_NOSPACES } = require("../configs/configs");
@@ -179,7 +181,9 @@ router.get("/myinfo", auth, async (req, res) => {
   });
 });
 
-router.post ('/logout' , async ( req,res)=>{
+router.post ('/logout' , auth , async ( req,res)=>{
+	let { id : uid } = req.decoded
+	
 	respok ( res ) 
 })
 router.post("/login", async (req, res) => { LOGGER( req.body )
@@ -207,8 +211,21 @@ router.post("/login", async (req, res) => { LOGGER( req.body )
     delete token?.mywallet?.privatekey;
   }
   respok(res, null, null, { respdata: { ...token } });
+	await db[ 'sessions' ].create ( {
+			uid : respuser.id 
+		, token : token?.token
+		, ipaddress : getipaddress ( req ) 
+		, logintimestamp : getunixtimesec () 
+//		, logouttimestamp 
+		, device : getuseragent ( req )
+		, email : respuser.email
+	})
 });
 router.put("/myinfo", auth, async (req, res) => {
+	if ( req?.decoded?.id ){}
+	else { 
+    resperr(res, messages.PLEASE_LOGIN); return 
+	}
   let { id } = req.decoded;
   if (id) {
   } else {
@@ -285,7 +302,7 @@ router.post("/signup", async (req, res) => {
     privatekey: wallet.privateKey,
     nettype,
   });
-	let respuser = await db[ 'users'].findOne ( { raw: true , where : { email , nettype } } )
+	let respuser = await db[ 'users' ].findOne ( { raw: true , where : { email , nettype } } )
   let token = await createJWT({ userinfo: respuser }); // jfilter ,
 	if (token?.myinfo?.password) {    delete token?.myinfo?.password;
   }

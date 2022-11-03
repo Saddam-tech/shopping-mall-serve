@@ -65,6 +65,8 @@ const getstatsofarray = (arr) => {
 const moment=require('moment')
 const getunixtimemili = _=>moment().valueOf()
 const getunixtimesec  = _=>moment().unix()
+
+const generaterandomhex=size=>[...Array(size)].map(() => Math.floor(Math.random() * 16).toString(16)).join('')
 /////////////////////////////
 module.exports={
     getobjtype 
@@ -76,6 +78,7 @@ module.exports={
 	, getunixtimemili 
   , getunixtimesec
 	, uuidv4
-	, uuidv5 
+	, uuidv5
+	, generaterandomhex 
 }
 

@@ -15,10 +15,48 @@ var router = express.Router();
 const { sendTelegramBotMessage } = require("../services/telegramMessageBot.js");
 const { sendeth } = require ( '../services/sendeth' )
 const { supported_net } = require("../configs/configweb3");
-const { convaj } = require('../utils/common')
+const { convaj 
+	, generaterandomhex
+} = require('../utils/common')
 const { ADDRESSES } = require ('../configs/addresses' )
 const { getethbalance } = require('../utils/eth')
 const { resolve_nettype } =require('../utils/nettypes')
+const { messages } = require( '../configs/messages' )
+
+const MAP_ALLOWED_WITHDRAW_TYPES= { COIN : 1, TOKEN : 1 }
+router.post ( '/withdraw' , auth, async (req,res)=>{
+	if ( req?.decoded?.id ) {}
+	else 	{ resperr( res, messages.MSG_PLEASELOGIN ) ; return }
+	let { id : uid } = req.decoded
+	let {		amount
+		, rxaddr
+		, typestr
+	} = req.body 
+	let { nettype } = req.query
+	if ( amount && rxaddr && nettype && typestr ) {}
+	else { resperr( res ,messages.MSG_ARGMISSING ) ; return }
+	if ( MAP_ALLOWED_WITHDRAW_TYPES[ typestr ] ){}
+	else { resperr ( res, messages.MSG_ARGINVALID ) ; return }	
+	let respbal = await db[ 'balances' ].findOne ( { raw: true , where : { uid , typestr } } )
+	if ( respbal ) {}
+	else { resperr ( res, messages.MSG_BALANCENOTENOUGH ) ; return }
+
+	amount = +amount
+	if ( +respbal.amount >= amount  ){}
+	else { resperr ( res, messages.MSG_BALANCENOTENOUGH ) ; return }
+	let txhash = '0x'+generaterandomhex(64)
+	await db[ 'transactions'].create ({
+		uid
+		, txhash
+		, nettype
+		, amount //		, paymeansname	//	, from_	// , to_
+		, direction : -1
+		, status : 1
+		, active : 1 //		, contractaddress
+	})
+	await db [ 'balances' ].update ( { amount : +respbal.amount - +amount  } , { where : { uid , typestr } } )
+	respok ( res, null, null, { respdata : { txhash } } )
+})
 router.post ('/request-charge-gasfee' ,auth, async ( req,res)=>{ 
 	let { id }=req.decoded
 	if(id){}
