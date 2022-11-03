@@ -105,6 +105,10 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.INTEGER(4),
       allowNull: true,
       comment: '0: placed, 1: under review, 2: on delivery, 3: done delivery'
+    },
+    itemuuid: {
+      type: DataTypes.STRING(60),
+      allowNull: true
     }
   }, {
     sequelize,

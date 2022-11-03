@@ -156,18 +156,21 @@ const generatewallet = (seedword) => {
 router.get("/myinfo", auth, async (req, res) => {
   let { id } = req.decoded;
   let { pw } = req.query;
-  let aproms = [];
-  aproms[aproms.length] = db["users"].findOne({ raw: true, where: { id } });
-  aproms[aproms.length] = db["userwallets"].findOne({
+  let aproms = []; let idx= 0 
+  aproms[idx++] = db["users"].findOne({ raw: true, where: { id } });
+  aproms[idx++] = db["userwallets"].findOne({
     raw: true,
     where: { uid: id },
   });
-  aproms[aproms.length] = db["balances"].findOne({
+  aproms[idx++] = db["balances"].findOne({
     raw: true,
     where: { uid: id },
   });
-  aproms[aproms.length] = countrows_scalar("shoppingcarts", { uid: id }); //  db['shoppingcarts'].findAll (
-  let [myinfo, mywallet, balance, countitemsinshoppingcart] = await Promise.all(
+  aproms[idx++] = countrows_scalar("shoppingcarts", { uid: id } ); //  db['shoppingcarts'].findAll (
+	aproms [ idx ++ ] = countrows_scalar( 'reviews' , { uid : id } ) 
+  let [myinfo, mywallet, balance, countitemsinshoppingcart
+		, countreviews	
+	] = await Promise.all(
     aproms
   );
   if (!pw) {
@@ -177,7 +180,9 @@ router.get("/myinfo", auth, async (req, res) => {
   }
 	if ( mywallet?.privatekey ) { delete mywallet?.privatekey }
   respok(res, null, null, {
-    respdata: { myinfo, mywallet, balance, countitemsinshoppingcart },
+    respdata: { myinfo, mywallet, balance, countitemsinshoppingcart
+			, countreviews	
+	 },
   });
 });
 

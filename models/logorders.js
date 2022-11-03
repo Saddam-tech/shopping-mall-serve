@@ -68,6 +68,56 @@ module.exports = function(sequelize, DataTypes) {
     sha256id: {
       type: DataTypes.STRING(100),
       allowNull: true
+    },
+    streetaddress: {
+      type: DataTypes.STRING(300),
+      allowNull: true
+    },
+    detailaddress: {
+      type: DataTypes.STRING(100),
+      allowNull: true
+    },
+    zipcode: {
+      type: DataTypes.STRING(60),
+      allowNull: true
+    },
+    nation: {
+      type: DataTypes.STRING(10),
+      allowNull: true
+    },
+    salesid: {
+      type: DataTypes.INTEGER(10).UNSIGNED,
+      allowNull: true
+    },
+    salesuuid: {
+      type: DataTypes.STRING(60),
+      allowNull: true
+    },
+    merchantid: {
+      type: DataTypes.INTEGER(10).UNSIGNED,
+      allowNull: true
+    },
+    merchantuuid: {
+      type: DataTypes.STRING(60),
+      allowNull: true
+    },
+    status: {
+      type: DataTypes.INTEGER(4),
+      allowNull: true,
+      comment: '0: placed, 1: under review, 2: on delivery, 3: done delivery, 4: canceled, 5: refunded, 6: exchanged for another'
+    },
+    itemuuid: {
+      type: DataTypes.STRING(60),
+      allowNull: true
+    },
+    reason: {
+      type: DataTypes.INTEGER(4),
+      allowNull: true
+    },
+    reasonstr: {
+      type: DataTypes.STRING(60),
+      allowNull: true,
+      comment: '1: delay, 2: defect'
     }
   }, {
     sequelize,

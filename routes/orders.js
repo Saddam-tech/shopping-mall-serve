@@ -83,14 +83,15 @@ router.post( '/shopping-cart' , auth , async ( req,res)=>{
 	if ( isusedefaultaddress ) {}
 	else { } 
 	for ( let idx = 0 ; idx<list.length ; idx ++ ) {
-		let { itemid , amount , totalprice } = list[idx ]
+		let { itemid , itemuuid , amount , totalprice } = list[idx ]
 		await db['orders'].create ( { 
 			uid
 			, itemid //  : list[ idx].itemid
+			, itemuuid
 			, quantity : amount
 			, totalprice 
 			, uuid
-			, 
+			, status : ORDER_STATUS.PLACED 
 		})
 	}
 	respok ( res, null, null, { respdata : { uuid } } ) 
