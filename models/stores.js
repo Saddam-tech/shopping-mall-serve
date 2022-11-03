@@ -48,14 +48,12 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: true
     },
     latitude: {
-      type: DataTypes.FLOAT,
-      allowNull: true,
-      comment: 'of the store_s physical location'
+      type: DataTypes.STRING(20),
+      allowNull: true
     },
     longitude: {
-      type: DataTypes.FLOAT,
-      allowNull: true,
-      comment: 'of the store_s physical location'
+      type: DataTypes.STRING(20),
+      allowNull: true
     },
     officehours: {
       type: DataTypes.TEXT,
@@ -63,6 +61,14 @@ module.exports = function(sequelize, DataTypes) {
     },
     description: {
       type: DataTypes.TEXT,
+      allowNull: true
+    },
+    latitudedouble: {
+      type: DataTypes.DOUBLE,
+      allowNull: true
+    },
+    longitudedouble: {
+      type: DataTypes.DOUBLE,
       allowNull: true
     }
   }, {

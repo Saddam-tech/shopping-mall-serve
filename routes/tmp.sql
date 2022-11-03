@@ -1,3 +1,29 @@
+
+desc orders;
+| uid             | int(10) unsigned | YES  |     | NULL                |                               |
+| itemid          | int(10) unsigned | YES  |     | NULL                |                               |
+| unitprice       | varchar(20)      | YES  |     | NULL                |                               |
+| quantity        | int(10) unsigned | YES  |     | NULL                |                               |
+| totalprice      | varchar(20)      | YES  |     | NULL                |                               |
+| paymeansaddress | varchar(80)      | YES  |     | NULL                |                               |
+| paymeansname    | varchar(80)      | YES  |     | NULL                |                               |
+| txhash          | varchar(80)      | YES  |     | NULL                |                               |
+| deliveryaddress | varchar(300)     | YES  |     | NULL                |                               |
+| deliveryzip     | varchar(20)      | YES  |     | NULL                |                               |
+| deliveryphone   | varchar(60)      | YES  |     | NULL                |                               |
+| uuid            | varchar(60)      | YES  |     | NULL                |                               |
+| sha256id        | varchar(100)     | YES  |     | NULL                |                               |
+| streetaddress   | varchar(300)     | YES  |     | NULL                |                               |
+| detailaddress   | varchar(100)     | YES  |     | NULL                |                               |
+| zipcode         | varchar(60)      | YES  |     | NULL                |                               |
+| nation          | varchar(10)      | YES  |     | NULL                |                               |
+| salesid         | int(10) unsigned | YES  |     | NULL                |                               |
+| salesuuid       | varchar(60)      | YES  |     | NULL                |                               |
+| merchantid      | int(10) unsigned | YES  |     | NULL                |                               |
+| merchantuuid    | varchar(60)      | YES  |     | NULL                |                               |
+| status          | tinyint(4)       | YES  |     | NULL                |                               |
+| itemuuid        | varchar(60)      | YES  |     | NULL                |                               |
+
 promotions
 itemid            | int(10) unsigned    | YES  |     | NULL                |                               |
 | itemuuid          | varchar(60)         | YES  |     | NULL                |                               |

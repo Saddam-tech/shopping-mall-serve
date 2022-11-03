@@ -13,32 +13,50 @@ const { create_uuid_via_namespace
 const moment=require('moment')
 let countwritten = 0
 const { Op } =db.Sequelize
-const N = 30 
+const N = 15
 const uid= 10
 const nettype = 'ETH_TESTNET_GOERLI'
 let paymeansname = 'PURE'
 let myaddress='0xB66D4bCeac65209FaA75c3322DA1ae1ED83a06e4'
 const { CER_REASON , CER_REASON_N2C } =require( '../configs/const-defs' ) 
 const main = async _=>{
-	let listitems = await db[ 'items' ].findAll ( { raw : true } )
-	const MAX_IDX_ITEMS = listitems.length -1 
-	let resppaymeans = await db[ 'infopaymeans' ] .findOne ( { raw: true, where : { isprimary : 1 , nettype } } )
-	for ( let idx = 0; idx < N ; idx ++ ){
-		let idxitem = generaterandomnumber ( 0 , MAX_IDX_ITEMS )
-		let item = listitems [ idxitem ]
-  	let quantity = generaterandomnumber ( 1 , 6 )
+	const arritemuuids = [
+		'2366e241-a843-4ea7-8e40-f6a273933052' ,
+		'573f71bf-0e16-409b-be30-86007e5b4fba' ,
+		'5267ec95-0f20-41ce-b035-928a1d10ff9e' ,
+		'2b639230-b908-4877-a01d-6084a62ee6f8'
+	]
+
+	let m0 = moment()
+	for ( let idx = 0 ; idx < N ; idx ++ ) {
 		let uuid = uuidv4()
-		db[ 'orders' ].create ( {
-			uid
-			, itemid : item.id
-			, unitprice : item.price
-			, quantity
-			, totalprice : +item.price * quantity
-			,  paymeansaddress : resppaymeans.address
-			, paymeansname : resppaymeans.name
+		let reason  =generaterandomnumber ( 1 , 5 )
+		let item = generaterandomnumber( 0 , 3 ) 
+		await db[ 'logorders' ].create ( {
+			uid 
 			, uuid
-			, status : generaterandomnumber( 0 , 3 )
-			, itemuuid : item.uuid
+			, status : generaterandomnumber ( 4 , 7 )
+			, itemuuid : arritemuuids [ item ]
+			, reason // CER_REASON [] 
+			, reasonstr :  CER_REASON_N2C [ reason ] 
+		} )
+	} 
+}
+const main_tx=async _=>{
+	let m0 = moment()
+	for ( let idx = 0; idx < 	N ; idx ++ ) {
+		let direction = Math.random()>0.5? +1 : -1
+		await db [ 'transactions' ].create ( {
+			uid // : '' 
+			, txhash  : '0x' + generaterandomhex ( 64 )
+			, nettype 
+			, amount : generaterandomnumber ( 1, 1000 )
+			, paymeansname
+			, from_ : ( direction==1 ? '0x'+generaterandomhex ( 40) : myaddress )
+			, to_ : (direction==1 ? myaddress : '0x'+generaterandomhex ( 40)  )
+			, direction // : Math.random()>0.5? +1 : -1
+			, status : Math.random()>0.2 ? 1 : 2
+			, active : 1
 		})
 	}
 }
