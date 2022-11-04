@@ -30,6 +30,34 @@ const { countrows_scalar } = require("../utils/db");
 const resolvedummy=async _=>{
 	return null
 }
+router.post ( '/item' , auth , async ( req,res )=>{
+	LOGGER(`@req.decoded`, req.decoded);
+  let { id : uid , isadmin } = req.decoded;
+  if ( uid) {
+  } else {
+    resperr(res, messages.MSG_PLEASE_LOGIN);
+    return;
+  } //	let { isadmin } = await db[ 'users' ].findOne ( {raw : true , where : { uid } } )
+  if (isadmin && isadmin >= MIN_ADMIN_LEVEL) {
+  } else {
+    resperr(res, messages.MSG_NOTPRIVILEGED);
+    return;
+  }
+  if (KEYS(req.body).length) {
+  } else {
+    resperr(res, messages.MSG_ARGMISSING);
+    return;
+  }
+	let uuid = uuidv4()
+	let resp = await db['items'].create ( {
+		sellerid : uid
+		, uuid
+		 
+	})
+	respok ( res, null,null , { 
+				
+	})
+})
 router.get ( '/item/:uuid' , auth , async ( req,res)=>{
 	let { uuid } = req.params
 	let aproms=[]
@@ -264,6 +292,7 @@ router.put(  "/item/:uuid",
     });
   }
 );
+
 router.post("/item", auth, async (req, res) => {
   LOGGER(`@req.decoded`, req.decoded);
   let { id, isadmin } = req.decoded;

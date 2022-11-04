@@ -70,6 +70,10 @@ module.exports = function(sequelize, DataTypes) {
     longitudedouble: {
       type: DataTypes.DOUBLE,
       allowNull: true
+    },
+    bizlicensenumber: {
+      type: DataTypes.STRING(60),
+      allowNull: true
     }
   }, {
     sequelize,

@@ -1,7 +1,7 @@
 /* jshint indent: 2 */
 
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('shoppingcarts', {
+  return sequelize.define('banners', {
     id: {
       autoIncrement: true,
       type: DataTypes.INTEGER(11).UNSIGNED,
@@ -17,48 +17,36 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.DATE,
       allowNull: true
     },
-    uid: {
-      type: DataTypes.INTEGER(10).UNSIGNED,
+    url: {
+      type: DataTypes.STRING(500),
       allowNull: true
     },
-    itemid: {
-      type: DataTypes.INTEGER(10).UNSIGNED,
-      allowNull: true
-    },
-    itemuuid: {
-      type: DataTypes.STRING(60),
-      allowNull: true
-    },
-    amount: {
-      type: DataTypes.INTEGER(10).UNSIGNED,
-      allowNull: true
-    },
-    totalprice: {
-      type: DataTypes.STRING(20),
-      allowNull: true
-    },
-    active: {
-      type: DataTypes.INTEGER(4),
-      allowNull: true
-    },
-    expiry: {
-      type: DataTypes.BIGINT,
+    name: {
+      type: DataTypes.STRING(100),
       allowNull: true
     },
     uuid: {
       type: DataTypes.STRING(60),
       allowNull: true
     },
-    unitprice: {
-      type: DataTypes.STRING(20),
+    writer: {
+      type: DataTypes.STRING(60),
       allowNull: true
     },
-    options: {
-      type: DataTypes.TEXT,
+    writerid: {
+      type: DataTypes.INTEGER(10).UNSIGNED,
+      allowNull: true
+    },
+    isprimary: {
+      type: DataTypes.INTEGER(4),
+      allowNull: true
+    },
+    active: {
+      type: DataTypes.INTEGER(4),
       allowNull: true
     }
   }, {
     sequelize,
-    tableName: 'shoppingcarts'
+    tableName: 'banners'
   });
 };

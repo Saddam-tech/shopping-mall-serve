@@ -114,6 +114,18 @@ module.exports = function(sequelize, DataTypes) {
     urlprofileimage: {
       type: DataTypes.STRING(400),
       allowNull: true
+    },
+    mileage: {
+      type: DataTypes.STRING(20),
+      allowNull: true
+    },
+    points: {
+      type: DataTypes.STRING(20),
+      allowNull: true
+    },
+    levelstr: {
+      type: DataTypes.STRING(60),
+      allowNull: true
     }
   }, {
     sequelize,

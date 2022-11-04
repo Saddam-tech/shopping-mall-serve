@@ -109,6 +109,10 @@ module.exports = function(sequelize, DataTypes) {
     itemuuid: {
       type: DataTypes.STRING(60),
       allowNull: true
+    },
+    options: {
+      type: DataTypes.TEXT,
+      allowNull: true
     }
   }, {
     sequelize,

@@ -16,11 +16,63 @@ const axios = require('axios');
 const { redisconfig } = require ( '../configs/redis.conf' )
 const cliredisa = require('async-redis').createClient( redisconfig )
 const { findone } =require('../utils/db')
+const { messages}= require('../configs/messages')
 var router = express.Router();
-
 const MAP_TABLES_POST_METHOD_ALLOWED = {  } // 'inq
 const KEYS=Object.keys
+const STRINGER = JSON.stringify
+ 
+router.put ( '/:tablename/:key/:value' , auth , async ( req,res)=>{
+	let { id : uid } = req.decoded
+	if ( uid ) {}
+	else { resperr( res, messages.MSG_PLEASELOGIN ) ; return }
+	let { key , value } =req.params
+	let { tablename } = req.params
+	let resptableex = await tableexists ( tablename ) ;
+	if ( resptableex ) {}
+	else { resperr ( res, messages.MSG_TABLENOTFOUND ) ; return } 
+	let jfilter={}
+	jfilter[ key ] = value
+	let resp = await db[ tablename ].findOne ( { raw: true , where : { 	uid, ... jfilter } } )
+	if ( resp ) {}
+	else { resperr ( res, messages.MSG_DATANOTFOUND ) ; return }
+	let jupdates={}
+	KEYS( req.body ).forEach ( key =>{
+		let objtype = getobjtype( req.body[ key ])
+		switch ( objtype ) {
+			case 'String' : jupdates[ key ] = req.body[ key ]
+			break
+			case 'Array' :  jupdates[ key ] = STRINGER ( req.body[ key ] )
+			break
+			case 'Object' : jupdates[ key ] = STRINGER ( req.body[ key ] )
+			break
+		}
+	})
+	await db[ tablename ].update ( { ... jupdates } , { where : { id: resp.id } } )
+	respok ( res ) 
+})
 
+router.delete ( '/:tablename' , auth , async ( req,res)=>{
+	let { id : uid } =req.decoded
+	if ( uid ) {}
+	else { resperr( res, messages.MSG_PLEASELOGIN ) ; return }
+	let { key , value } = req.body
+	if ( key , value ) {}
+	else { resperr ( res, messages.MSG_ARGMISSING ) ; return }
+	let jfilter={}
+	jfilter[ key ] = value
+	let { tablename } = req.params
+	let resptableex = await tableexists  ( tablename ) ;
+	if ( resptableex ) {}
+	else { resperr ( res, messages.MSG_TABLENOTFOUND ) ; return } 
+
+	let resp = await db[ tablename ].findOne ( { raw: true , where : { 	uid, ... jfilter } } )
+	if ( resp ) {}
+	else { resperr ( res, messages.MSG_DATANOTFOUND ) ; return }
+	jfilter [ 'uid' ]=uid
+	await db[ tablename ].destroy ( {where : { ... jfilter } } )
+	respok ( res ) 
+})
 router.put ( '/toggle/:tablename' , auth , async ( req,res)=>{
 	let { id : uid } = req.decoded
 	if ( uid ) {}

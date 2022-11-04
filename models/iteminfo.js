@@ -24,6 +24,10 @@ module.exports = function(sequelize, DataTypes) {
     contentbody: {
       type: DataTypes.TEXT,
       allowNull: true
+    },
+    options: {
+      type: DataTypes.TEXT,
+      allowNull: true
     }
   }, {
     sequelize,

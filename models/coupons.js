@@ -44,6 +44,14 @@ module.exports = function(sequelize, DataTypes) {
     code: {
       type: DataTypes.STRING(100),
       allowNull: true
+    },
+    amount: {
+      type: DataTypes.STRING(20),
+      allowNull: true
+    },
+    amountunit: {
+      type: DataTypes.STRING(20),
+      allowNull: true
     }
   }, {
     sequelize,

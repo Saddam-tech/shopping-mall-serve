@@ -19,30 +19,8 @@ const nettype = 'ETH_TESTNET_GOERLI'
 let paymeansname = 'PURE'
 let myaddress='0xB66D4bCeac65209FaA75c3322DA1ae1ED83a06e4'
 const { CER_REASON , CER_REASON_N2C } =require( '../configs/const-defs' ) 
-const main = async _=>{
-	const arritemuuids = [
-		'2366e241-a843-4ea7-8e40-f6a273933052' ,
-		'573f71bf-0e16-409b-be30-86007e5b4fba' ,
-		'5267ec95-0f20-41ce-b035-928a1d10ff9e' ,
-		'2b639230-b908-4877-a01d-6084a62ee6f8'
-	]
 
-	let m0 = moment()
-	for ( let idx = 0 ; idx < N ; idx ++ ) {
-		let uuid = uuidv4()
-		let reason  =generaterandomnumber ( 1 , 5 )
-		let item = generaterandomnumber( 0 , 3 ) 
-		await db[ 'logorders' ].create ( {
-			uid 
-			, uuid
-			, status : generaterandomnumber ( 4 , 7 )
-			, itemuuid : arritemuuids [ item ]
-			, reason // CER_REASON [] 
-			, reasonstr :  CER_REASON_N2C [ reason ] 
-		} )
-	} 
-}
-const main_tx=async _=>{
+const main=async _=>{
 	let m0 = moment()
 	for ( let idx = 0; idx < 	N ; idx ++ ) {
 		let direction = Math.random()>0.5? +1 : -1
