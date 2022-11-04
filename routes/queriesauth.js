@@ -56,7 +56,7 @@ router.delete ( '/:tablename' , auth , async ( req,res)=>{
 	let { id : uid } =req.decoded
 	if ( uid ) {}
 	else { resperr( res, messages.MSG_PLEASELOGIN ) ; return }
-	let { key , value } = req.body
+	let { key , value } = req.body ; LOGGER( req.body )
 	if ( key , value ) {}
 	else { resperr ( res, messages.MSG_ARGMISSING ) ; return }
 	let jfilter={}
@@ -77,6 +77,7 @@ router.put ( '/toggle/:tablename' , auth , async ( req,res)=>{
 	let { id : uid } = req.decoded
 	if ( uid ) {}
 	else { resperr ( res, messages.MSG_PLEASELOGIN ) ; return } 
+	LOGGER( req.body ) 
 	let { key , targetcolumnname } = req.body
 	if ( key && KEYS ( key ).length && targetcolumnname) {}
 	else { resperr( res, messages.MSG_ARGMISSING ) ; return }
@@ -85,7 +86,7 @@ router.put ( '/toggle/:tablename' , auth , async ( req,res)=>{
 	if ( resptableex ) {}
 	else { resperr ( res, messages.MSG_DATANOTFOUND ) ; return }
 	let targetstatus 
-	let resprow = await db[ tablename ] .findOne ( { raw: true , where : { ... key } } )
+	let resprow = await db[ tablename ] .findOne ( { raw: true , where : { ... key ,uid } } )
 	if ( resprow ) {
 		let jdata= {}
 		targetstatus = 1 ^ +resprow[ targetcolumnname ]

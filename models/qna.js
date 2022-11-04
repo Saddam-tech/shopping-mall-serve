@@ -48,6 +48,15 @@ module.exports = function(sequelize, DataTypes) {
     itemid: {
       type: DataTypes.INTEGER(10).UNSIGNED,
       allowNull: true
+    },
+    ispublic: {
+      type: DataTypes.INTEGER(4),
+      allowNull: true
+    },
+    status: {
+      type: DataTypes.INTEGER(4),
+      allowNull: true,
+      comment: '0: wait for answer, 1: answered, 2: etc'
     }
   }, {
     sequelize,

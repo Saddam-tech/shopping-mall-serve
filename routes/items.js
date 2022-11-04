@@ -75,19 +75,20 @@ router.get ( '/item/:uuid' , auth , async ( req,res)=>{
 	aproms[ aproms.length ] = db[ 'iteminfo' ].findOne ( { raw: true, where : { itemuuid } } ) // 9
 	aproms[ aproms.length ] = db[ 'sales' ].findOne ( { raw: true, where : { itemuuid } } ) // 10
 */
-	aproms[ 0 ] = db[ 'items' ].findOne ( { raw : true , where : { uuid } } ) // 0
-	aproms[ 1 ] = db[ 'promotions' ].findOne ( { raw: true, where : { itemuuid } } ) // 1 
-	aproms[ 2 ] = db[ 'reviews' ].findAll ( { raw: true , where : { itemuuid } } ) // 2
-	aproms[ 3 ] = countrows_scalar ( 'reviews'  , { itemuuid } ) // 3
-	aproms[ 4 ] = db[ 'qna' ].findAll ({ raw: true , where : { itemuuid } } )  // 4
-	aproms[ 5 ] = countrows_scalar ( 'qna'  , { itemuuid } ) // 5
-	aproms[ 6 ] = db[ 'promotions' ].findAll ({ raw: true , where : { itemuuid } } )  // 6
-	aproms[ 7 ] = db[ 'inventory' ].findAll ( { raw: true, where : { itemuuid } } ) // 7
-	aproms[ 8 ] = countrows_scalar ( 'favorites' , { status : 1 } ) // 8
-	aproms[ 9 ] = db[ 'iteminfo' ].findOne ( { raw: true, where : { itemuuid } } ) // 9
-	aproms[ 10 ] = db[ 'sales' ].findOne ( { raw: true, where : { itemuuid } } ) // 10
-	if (uid ) {	aproms[ 11 ] = db[ 'favorites' ].findOne ( { raw: true, where : { uid, itemuuid } , attributes : ['status'] } ) } // 11
-	else {	aproms[ 11 ] = resolvedummy() }
+	let idx = 0
+	aproms[ idx ++ ] = db[ 'items' ].findOne ( { raw : true , where : { uuid } } ) // 0
+	aproms[ idx ++ ] = db[ 'promotions' ].findOne ( { raw: true, where : { itemuuid } } ) // 1 
+	aproms[ idx ++ ] = db[ 'reviews' ].findAll ( { raw: true , where : { itemuuid } } ) // 2
+	aproms[ idx ++ ] = countrows_scalar ( 'reviews'  , { itemuuid } ) // 3
+	aproms[ idx ++ ] = db[ 'qna' ].findAll ({ raw: true , where : { itemuuid } } )  // 4
+	aproms[ idx ++ ] = countrows_scalar ( 'qna'  , { itemuuid } ) // 5
+	aproms[ idx ++ ] = db[ 'promotions' ].findAll ({ raw: true , where : { itemuuid } } )  // 6
+	aproms[ idx ++ ] = db[ 'inventory' ].findAll ( { raw: true, where : { itemuuid } } ) // 7
+	aproms[ idx ++ ] = countrows_scalar ( 'favorites' , { status : 1 } ) // 8
+	aproms[ idx ++ ] = db[ 'iteminfo' ].findOne ( { raw: true, where : { itemuuid } } ) // 9
+	aproms[ idx ++  ] = db[ 'sales' ].findOne ( { raw: true, where : { itemuuid } } ) // 10
+	if (uid ) {	aproms[ idx ++ ] = db[ 'favorites' ].findOne ( { raw: true, where : { uid, itemuuid } , attributes : ['status'] } ) } // 11
+	else {	aproms[ idx ++ ] = resolvedummy() }
 	let [ item , // 0
 		promotion 		, // 1 
 		reviews ,  // 2
@@ -103,12 +104,14 @@ router.get ( '/item/:uuid' , auth , async ( req,res)=>{
 	LOGGER( `@salesinfo` , salesinfo ) 
 	let stores = []
 	let aproms02=[]
-LOGGER( `@inventory` , inventory ) 
+	LOGGER( `@inventory` , inventory )
+	let countstores = 0
 	if ( inventory && inventory.length ) {
 		inventory.forEach ( ( elem , idx ) => {
 			aproms02 [ idx ] = db['stores'].findOne ( { raw : true ,where : { uuid : elem.storeuuid }  } )
 		} )
 		stores = await Promise.all ( aproms02 ) 
+		countstores = stores?.length 
 	} else {}
 	respok ( res, null,null, { respdata : { ... item
 		, item 
@@ -124,6 +127,7 @@ LOGGER( `@inventory` , inventory )
 		, itemdetailinfo
 		, salesinfo
 		, ismyfavorite
+		, countstores 
 	 } } )
 })
 router.get("/list/:offset/:limit", async (req, res) => {
