@@ -61,6 +61,10 @@ module.exports = function(sequelize, DataTypes) {
     uuid: {
       type: DataTypes.STRING(60),
       allowNull: true
+    },
+    imageurl03: {
+      type: DataTypes.STRING(500),
+      allowNull: true
     }
   }, {
     sequelize,
