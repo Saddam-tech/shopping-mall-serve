@@ -44,6 +44,14 @@ module.exports = function(sequelize, DataTypes) {
     active: {
       type: DataTypes.INTEGER(4),
       allowNull: true
+    },
+    isitem: {
+      type: DataTypes.INTEGER(4),
+      allowNull: true
+    },
+    itemuuid: {
+      type: DataTypes.STRING(60),
+      allowNull: true
     }
   }, {
     sequelize,

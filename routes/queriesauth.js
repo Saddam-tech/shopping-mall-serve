@@ -142,7 +142,7 @@ router.post ( '/:tablename' , auth , async (req,res) => { LOGGER( req.body )
 	}
 	else 	{
 		await db[ tablename ] .create ( {... req.body , uid } )
-		respok ( res )
+		respok ( res , null, null , { respdata : {  uuid } } )
 	} //	await db[ tablename ] .create ( {... req.body , uid  } )
 })
 router.put ( '/:tablename/:id' , async ( req,res)=>{ LOGGER( req.body )
@@ -267,6 +267,8 @@ router.get( '/rows/:tablename/:fieldname/:fieldval/:offset/:limit/:orderkey/:ord
     let { searchkey } = req.query;
     console.log('req.query', req.query);
     //  const username = getusernamefromsession(req);
+		let { id : uid } = req.decoded
+		
     fieldexists(tablename, fieldname).then(async (resp) => {
       if (resp) {
       } else {
@@ -335,6 +337,9 @@ router.get( '/rows/:tablename/:fieldname/:fieldval/:offset/:limit/:orderkey/:ord
       if (nettype) {
         jfilter['nettype'] = nettype;
       }
+		let respfieldex___ = await fieldexists ( tablename , 'uid' )
+		if ( respfieldex___ ) { jfilter[ 'uid' ] = uid }
+		else { }
       db[tablename]
         .findAll({
           raw: true,

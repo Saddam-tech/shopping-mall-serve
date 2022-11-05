@@ -113,6 +113,26 @@ module.exports = function(sequelize, DataTypes) {
     options: {
       type: DataTypes.TEXT,
       allowNull: true
+    },
+    tracknumber: {
+      type: DataTypes.STRING(100),
+      allowNull: true
+    },
+    carrierid: {
+      type: DataTypes.INTEGER(10).UNSIGNED,
+      allowNull: true
+    },
+    detailuuid: {
+      type: DataTypes.STRING(60),
+      allowNull: true
+    },
+    carriersymbol: {
+      type: DataTypes.STRING(20),
+      allowNull: true
+    },
+    carriername: {
+      type: DataTypes.STRING(20),
+      allowNull: true
     }
   }, {
     sequelize,

@@ -66,6 +66,12 @@ router.post ( '/shopping-cart/:uuid/:qty' , auth , async ( req,res) => {
 	let uuid = create_uuid_via_namespace ( `${uid}_${itemuuid}`)  
 	let resp = await db['shoppingcarts'].findOne ( { raw: true, where : { uuid } } )
 	let { options } = req.body 
+
+	let respitem = await db[ 'items'] .findOne ( { raw: true, where : { uuid : itemuuid } } )
+	if ( respitem ) {}
+	else { resperr ( res, messags.MSG_DATANOTFOUND ) ; return }
+	let { price : unitprice } = respitem
+	let amount = qty
 	if ( resp ) {
 		await db['shoppingcarts'].update ( { amount : +resp.amount + +qty
 			, options : ( resp.options? resp.options : null  )
@@ -74,10 +80,12 @@ router.post ( '/shopping-cart/:uuid/:qty' , auth , async ( req,res) => {
 		await db['shoppingcarts'].create ( { 
 			uid
 			, itemuuid
-			, amount : qty
+			, amount // : qty
 			, active : 1
 			, uuid
-			, options : ( options ? STRINGER ( options ) : null )  
+			, options : ( options ? STRINGER ( options ) : null )
+			, unitprice
+			, totalprice : +unitprice * +amount
 		})
 	}
 	respok ( res, null,null, { respdata: { uuid } } )

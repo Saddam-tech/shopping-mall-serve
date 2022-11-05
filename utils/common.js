@@ -66,6 +66,12 @@ const moment=require('moment')
 const getunixtimemili = _=>moment().valueOf()
 const getunixtimesec  = _=>moment().unix()
 
+const generate_random_track_number =_=>{
+	let str =  generaterandomhex(14)
+	let pos0 = generaterandomnumber(3,5)
+	let pos1 = generaterandomnumber(8,11)	
+	return str.substr( 0, pos0 ) + '-' + str.substr( pos0, pos1 ) + '-' + str.substr(pos1)
+}
 const generaterandomhex=size=>[...Array(size)].map(() => Math.floor(Math.random() * 16).toString(16)).join('')
 /////////////////////////////
 module.exports={
@@ -79,6 +85,7 @@ module.exports={
   , getunixtimesec
 	, uuidv4
 	, uuidv5
+	, generate_random_track_number 
 	, generaterandomhex 
 }
 

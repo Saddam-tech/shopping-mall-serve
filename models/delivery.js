@@ -95,6 +95,14 @@ module.exports = function(sequelize, DataTypes) {
     orderuuid: {
       type: DataTypes.STRING(60),
       allowNull: true
+    },
+    carriersymbol: {
+      type: DataTypes.STRING(20),
+      allowNull: true
+    },
+    carriername: {
+      type: DataTypes.STRING(20),
+      allowNull: true
     }
   }, {
     sequelize,

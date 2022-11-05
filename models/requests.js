@@ -44,6 +44,30 @@ module.exports = function(sequelize, DataTypes) {
     note: {
       type: DataTypes.TEXT,
       allowNull: true
+    },
+    titlename: {
+      type: DataTypes.STRING(300),
+      allowNull: true
+    },
+    contentbody: {
+      type: DataTypes.TEXT,
+      allowNull: true
+    },
+    isnotify: {
+      type: DataTypes.INTEGER(4),
+      allowNull: true
+    },
+    phonenumber: {
+      type: DataTypes.STRING(60),
+      allowNull: true
+    },
+    imageurl00: {
+      type: DataTypes.STRING(500),
+      allowNull: true
+    },
+    imageurl01: {
+      type: DataTypes.STRING(500),
+      allowNull: true
     }
   }, {
     sequelize,
