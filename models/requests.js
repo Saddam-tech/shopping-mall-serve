@@ -68,6 +68,18 @@ module.exports = function(sequelize, DataTypes) {
     imageurl01: {
       type: DataTypes.STRING(500),
       allowNull: true
+    },
+    answer: {
+      type: DataTypes.TEXT,
+      allowNull: true
+    },
+    uuid: {
+      type: DataTypes.STRING(60),
+      allowNull: true
+    },
+    statusstr: {
+      type: DataTypes.STRING(60),
+      allowNull: true
     }
   }, {
     sequelize,

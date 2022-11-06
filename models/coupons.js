@@ -52,6 +52,18 @@ module.exports = function(sequelize, DataTypes) {
     amountunit: {
       type: DataTypes.STRING(20),
       allowNull: true
+    },
+    type: {
+      type: DataTypes.INTEGER(10).UNSIGNED,
+      allowNull: true
+    },
+    name: {
+      type: DataTypes.STRING(100),
+      allowNull: true
+    },
+    restrictions: {
+      type: DataTypes.STRING(200),
+      allowNull: true
     }
   }, {
     sequelize,

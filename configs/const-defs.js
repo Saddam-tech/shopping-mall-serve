@@ -16,6 +16,7 @@ const ORDER_STATUS={
 	, RETURNED_YET_NOT_RESOLVED : 7 
 //  '0: placed, 1: under review, 2: on delivery, 3: done delivery',
 }
+
 const CER_REASON = {
 		DELAY : 1
 	, DEFECT : 2
@@ -33,9 +34,28 @@ const CER_REASON_N2C = {
 	, 4 : 'DOES_NOT_FIT'  
 	, 5 : 'PAST_EXPIRY' 
 }
+const REQUEST_STATUS = {
+	PLACED: 0
+	, UNDER_REVIEW : 1
+	, REJECTED : 2
+	, ACCEPTED : 3
+	, RESOLVED : 4
+}
+const REQUEST_STATUS_N2C = {
+		0 : 'PLACED'
+	, 1: 'UNDER_REVIEW'
+	, 2: 'REJECTED'
+	, 3: 'ACCEPTED'
+	, 4 : 'RESOLVED'
+}
+
+
+
 module.exports=  {
 	ORDER_STATUS
 	, DELIVERY_STATUS
 	, CER_REASON
 	, CER_REASON_N2C
+	, REQUEST_STATUS
+	, REQUEST_STATUS_N2C  
 }

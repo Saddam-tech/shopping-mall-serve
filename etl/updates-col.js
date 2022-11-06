@@ -19,11 +19,31 @@ const uid= 10
 const nettype = 'ETH_TESTNET_GOERLI'
 let paymeansname = 'PURE'
 let myaddress='0xB66D4bCeac65209FaA75c3322DA1ae1ED83a06e4'
-const { CER_REASON , CER_REASON_N2C } =require( '../configs/const-defs' ) 
+const { CER_REASON , CER_REASON_N2C 
+	, REQUEST_STATUS_N2C 
+} =require( '../configs/const-defs' ) 
 const { generaterandomsentence } =require('../utils/random-sentence-gen' )
 const randomwords = require('random-words')
 let listcarriers
 const main = async _=>{
+	let list = await db[ 'requests' ].findAll ( { raw : true , where : {} } )
+	list.forEach ( async elem => {
+//		let uuid = uuidv4()
+//		await db[ 'requests' ].update ( { uuid }  , { where : { id : elem.id } } )
+//		await db[ 'requests' ].update ( { answer : randomwords( generaterandomnumber(2,5) ).join ( ' ') }, { where : { id:elem.id } } )
+		let status = generaterandomnumber ( 0, 4 )
+		let statusstr= REQUEST_STATUS_N2C [ status ]
+		await db[ 'requests' ].update ( { status , statusstr }, { where : { id:elem.id } } )
+	})
+}
+/** PLACED: 0
+ 22   , UNDER_REVIEW : 1
+ 23   , REJECTED : 2
+ 24   , ACCEPTED : 3
+ 25   , RESOLVED : 4
+*/
+
+const main___ = async _=>{
 	let list = await db[ 'orders' ].findAll ( { raw :true } )
 	list.forEach ( async elem => {
 		if ( elem.totalprice ) {return }
