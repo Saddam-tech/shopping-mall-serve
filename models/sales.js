@@ -100,6 +100,16 @@ module.exports = function(sequelize, DataTypes) {
     policydelivery: {
       type: DataTypes.TEXT,
       allowNull: true
+    },
+    feedelivery: {
+      type: DataTypes.STRING(20),
+      allowNull: true,
+      comment: 'delivery fee nominal'
+    },
+    feedelivery1: {
+      type: DataTypes.STRING(20),
+      allowNull: true,
+      comment: 'delivery fee for islands, mountail, remote locations'
     }
   }, {
     sequelize,

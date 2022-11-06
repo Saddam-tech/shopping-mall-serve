@@ -35,6 +35,21 @@ const { ORDER_STATUS
 	, DELIVERY_STATUS
  } =require('../configs/const-defs' ) 
 
+router.delete ( '/' , auth , async ( req,res)=>{
+	let { id : uid } = req.decoded
+	let { key , value, reason , reasonstr } =req.body
+	if ( key && value && reasonstr ) {}
+	else { resperr ( res , messages.MSG_ARGMISSING ) ; return }
+	let jfilter ={}
+	jfilter [ key ] = value
+	let resporder = db[ 'orders' ].findOne ( { raw :true, where : { ... jfilter } } )
+	if ( resporder ) {}
+	else { resperr ( res , messages.MSG_DATANOTFOUND ) ; return }
+	if ( +resporder.uid == +uid ) {}
+	else { resperr ( res, messages.MSG_NOTAUTHORIZED ); return }
+	await moverow ( 'orders' , { id : resporder.id } , 'logorders' , { reasonstr: reasonstr? reasonstr.substr(0,60) : null }  )
+	respok ( res ) 
+})
 router.post( '/shipment' , auth , async ( req,res)=>{
 	let { id : uid } = req.decoded
 	if ( uid ) {}
@@ -44,7 +59,6 @@ router.post( '/shipment' , auth , async ( req,res)=>{
 	else { resperr ( res , messages.MSG_ARGMISSING , null, { reason : 'arrorderuuids'} ) ; return }
 	if ( carrierid && tracknumber ) {}
 	else { resperr ( res, messages.MSG_ARGMISSING , null , { reason : 'carrierid or tracknumber' } ) ; return }
-
 	for ( let idx = 0 ; idx<arrorderuuids.length; idx ++ ) {
 		let orderuuid = arrorderuuids [ idx ]
 		let resporder = await db[ 'orders' ].findOne ( { raw: true, where : { uuid : orderuuid  } } )
@@ -69,7 +83,79 @@ router.post( '/shipment' , auth , async ( req,res)=>{
 	})
 	respok ( res, null,null, { respdata : uuid } )	
 })
-
+router.post ( '/immediate-placement/:uuid/:qty' , auth , async ( req,res)=>{
+	let { streetaddress 
+		, detailaddress
+		, zipcode
+		, isusedefaultaddress
+		, issetcurrentgivenaddresstodefault
+//		, itemuuid
+		, feedelivery
+		, totalpayamount
+		, orderer
+		, receiver
+		, phonenumber
+		, 
+	} = req.body
+//	if ( orderer && receiver ) { }
+	// else { resperr ( res, messages.MSG_ARGMISSING ) ; return }
+	let { id : uid } =req.decoded
+	let { uuid : itemuuid , qty } = req.params
+	let respitem = await db[ 'items' ].findOne ( { raw: true, where : { uuid : itemuuid } } )
+	if ( respitem ) {}
+	else { resperr ( res, messages.MSG_DATANOTFOUND ) ; return }
+	let amount = qty
+	let respmybalance = await db[ 'balances' ].findOne ( { raw: true , where : { uid } } )
+	if ( respmybalance ) {}
+	else { resperr( res, messages.MSG_DATANOTFOUND , null , { reason : 'balance' } ) ; return }
+	if ( +respmybalance.amount >= +totalpayamount) {}
+	else { resperr( res, messages.MSG_BALANCENOTENOUGH ) ; return }
+	await db[ 'balances' ].update ( { amount : +respmybalance.amount - totalpayamount } , { where : { uid } } )
+	if ( isusedefaultaddress ) {
+		let respdefaultaddress = await db[ 'physicaladdresses' ].findOne ( { raw : true , where : { uid , active : 1 , isprimary : 1 } } )
+		if ( respdefaultaddress && respdefaultaddress.streetaddress ){ 
+			streetaddress = respdefaultaddress.streetaddress
+			detailaddress = respdefaultaddress.detailaddress
+		}
+		else { resperr ( res, messages.MSG_DATANOTFOUND , null, { reason :'default address not found'} ) ; return }
+	}
+	else { 
+		if ( steetaddress ) {}
+		else { resperr ( res, messages.MSG_ARGMISSING , null, { reason : 'steetaddress' }) ; return }
+	}
+	if ( issetcurrentgivenaddresstodefault ) {
+		if ( streetaddress ){ }
+		else { resperr ( res, messages.MSG_ARGMISSING , null, { reason : 'streetaddress' } ) ; return }
+		await db['physicaladdresses'].create ( {
+			streetaddress : ( streetaddress ? streetaddress : null )
+			, detailaddress : ( detailaddress ? detailaddress : null )  
+			, zipcode : ( zipcode ? zipcode : null )
+			, nation : ( nation ? nation : null )
+			, active : 1
+			, isprimary : 1
+			, uuid : uuidv4()
+		})
+	} 
+	let uuid = uuidv4 ()
+	await db[ 'orders' ].create ( {
+			uid
+		, itemid : respitem.id
+		, itemuuid : respitem.uuid
+		, quantity : qty
+		, totalprice : totalpayamount
+		, uuid
+		, detailuuid : uuid
+		, status :ORDER_STATUS.PLACED
+		, orderer : ( orderer ? orderer : null )
+		, receiver : ( receiver ? receiver : null )
+		, phonenumber : ( phonenumber ? phonenumber : null )
+		, feedelivery : ( feedelivery ? feedelivery : null )
+		, zipcode : ( zipcode ? zipcode : null )
+		, streetaddress
+		, detailaddress
+	})
+	respok ( res, null, null, { respdata : { uuid } } )
+})
 router.post( '/shopping-cart' , auth , async ( req,res)=>{
 	let { deliveryaddress , isusedefaultaddress } =req.body
 	let { id : uid} = req.decoded
@@ -85,7 +171,6 @@ router.post( '/shopping-cart' , auth , async ( req,res)=>{
 //	let transaction = db. 
 	await db['balances'].update ( { amount : +respmybalance.amount - sumoforders } , { where : { uid } } )
 	let uuid = uuidv4()
-	
 	if ( isusedefaultaddress ) {}
 	else { } 
 	for ( let idx = 0 ; idx<list.length ; idx ++ ) {

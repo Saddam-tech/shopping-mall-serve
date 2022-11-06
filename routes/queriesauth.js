@@ -73,7 +73,7 @@ router.delete ( '/:tablename' , auth , async ( req,res)=>{
 	await db[ tablename ].destroy ( {where : { ... jfilter } } )
 	respok ( res ) 
 })
-router.put ( '/toggle/:tablename' , auth , async ( req,res)=>{
+router.put ( '/toggle/:tablename' , auth , async ( req,res)=>{ LOGGER( req.body )
 	let { id : uid } = req.decoded
 	if ( uid ) {}
 	else { resperr ( res, messages.MSG_PLEASELOGIN ) ; return } 

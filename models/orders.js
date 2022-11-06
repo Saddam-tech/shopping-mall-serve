@@ -133,6 +133,26 @@ module.exports = function(sequelize, DataTypes) {
     carriername: {
       type: DataTypes.STRING(20),
       allowNull: true
+    },
+    orderer: {
+      type: DataTypes.STRING(60),
+      allowNull: true
+    },
+    receiver: {
+      type: DataTypes.STRING(60),
+      allowNull: true
+    },
+    phonenumber: {
+      type: DataTypes.STRING(60),
+      allowNull: true
+    },
+    feedelivery: {
+      type: DataTypes.STRING(20),
+      allowNull: true
+    },
+    feedeliveryunit: {
+      type: DataTypes.STRING(60),
+      allowNull: true
     }
   }, {
     sequelize,
