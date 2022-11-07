@@ -25,7 +25,22 @@ const { CER_REASON , CER_REASON_N2C
 const { generaterandomsentence } =require('../utils/random-sentence-gen' )
 const randomwords = require('random-words')
 let listcarriers
-const main = async _=>{
+
+const { uniqueNamesGenerator, adjectives, colors, animals
+	, languages
+	, starWars
+	, names
+ } = require('unique-names-generator');
+
+const main =async _=>{
+	let list = await db[ 'physicaladdresses' ].findAll ( { raw: true , where : {} } )
+	list.forEach ( async elem => {
+		await db[ 'physicaladdresses'].update ( { receiver : uniqueNamesGenerator({			dictionaries: [ adjectives, colors, animals ] , separator : ' ' })
+		,			phonenumber : `010-${generaterandomnumber(1000,9999)}-${generaterandomnumber(1000,9999)}`
+	  } , { where : { id  : elem.id } } )
+	})
+}
+const main_requests = async _=>{
 	let list = await db[ 'requests' ].findAll ( { raw : true , where : {} } )
 	list.forEach ( async elem => {
 //		let uuid = uuidv4()

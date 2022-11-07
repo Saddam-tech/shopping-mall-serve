@@ -49,6 +49,14 @@ module.exports = function(sequelize, DataTypes) {
     uuid: {
       type: DataTypes.STRING(60),
       allowNull: true
+    },
+    receiver: {
+      type: DataTypes.STRING(60),
+      allowNull: true
+    },
+    phonenumber: {
+      type: DataTypes.STRING(60),
+      allowNull: true
     }
   }, {
     sequelize,
