@@ -357,7 +357,7 @@ router.get( '/rows/:tablename/:fieldname/:fieldval/:offset/:limit/:orderkey/:ord
             });
             Promise.all(aproms).then((list_01) => {
               let list = list_01.map((elem, idx) => {
-                return { ...elem, ...list_00[idx] };
+                return { ...elem, ...list_00[idx] , iteminfo : elem  };
               });
               respok(res, null, null, { list: list, payload: { count } });
             });
@@ -410,7 +410,15 @@ router.get( "/singlerow/:tablename/:fieldname/:fieldval" , auth , async (req, re
     } else {
     }
     let respfindone = await findone(tablename, { ...jfilter });
-    respok(res, null, null, { respdata: respfindone });
+		let iteminfo 
+		if ( respfindone && respfindone?.itemuuid ) {
+			iteminfo = await db[ 'items'].findOne ( { raw: true, where : {
+				uuid : respfindone?.itemuuid
+			} } )
+		} 
+    respok(res, null, null, { respdata: { ... respfindone
+			, iteminfo
+		} });
   });
 });
 

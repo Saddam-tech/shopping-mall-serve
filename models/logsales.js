@@ -17,37 +17,31 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.DATE,
       allowNull: true
     },
-    userid: {
-      type: DataTypes.BIGINT,
+    uid: {
+      type: DataTypes.INTEGER(10).UNSIGNED,
       allowNull: true
     },
     itemid: {
-      type: DataTypes.BIGINT,
-      allowNull: true
-    },
-    uuid: {
-      type: DataTypes.STRING(60),
-      allowNull: true,
-      defaultValue: sequelize.fn('uuid')
-    },
-    storehouseid: {
-      type: DataTypes.BIGINT,
-      allowNull: true
-    },
-    quantity: {
       type: DataTypes.INTEGER(10).UNSIGNED,
-      allowNull: true,
-      comment: 'qty sold'
+      allowNull: true
     },
     unitprice: {
       type: DataTypes.STRING(20),
       allowNull: true
     },
-    paymeansname: {
-      type: DataTypes.STRING(60),
+    quantity: {
+      type: DataTypes.INTEGER(10).UNSIGNED,
+      allowNull: true
+    },
+    totalprice: {
+      type: DataTypes.STRING(20),
       allowNull: true
     },
     paymeansaddress: {
+      type: DataTypes.STRING(80),
+      allowNull: true
+    },
+    paymeansname: {
       type: DataTypes.STRING(80),
       allowNull: true
     },
@@ -55,26 +49,75 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(80),
       allowNull: true
     },
-    status: {
-      type: DataTypes.INTEGER(4),
-      allowNull: true,
-      comment: '0: order placed, 1:fulfilled, 2: there was an issue'
-    },
-    merchantid: {
-      type: DataTypes.BIGINT,
+    deliveryaddress: {
+      type: DataTypes.STRING(300),
       allowNull: true
     },
-    sha256id: {
-      type: DataTypes.STRING(80),
-      allowNull: true
-    },
-    deliveryfee: {
+    deliveryzip: {
       type: DataTypes.STRING(20),
       allowNull: true
     },
-    uid: {
-      type: DataTypes.BIGINT,
+    deliveryphone: {
+      type: DataTypes.STRING(60),
       allowNull: true
+    },
+    uuid: {
+      type: DataTypes.STRING(60),
+      allowNull: true
+    },
+    sha256id: {
+      type: DataTypes.STRING(100),
+      allowNull: true
+    },
+    streetaddress: {
+      type: DataTypes.STRING(300),
+      allowNull: true
+    },
+    detailaddress: {
+      type: DataTypes.STRING(100),
+      allowNull: true
+    },
+    zipcode: {
+      type: DataTypes.STRING(60),
+      allowNull: true
+    },
+    nation: {
+      type: DataTypes.STRING(10),
+      allowNull: true
+    },
+    salesid: {
+      type: DataTypes.INTEGER(10).UNSIGNED,
+      allowNull: true
+    },
+    salesuuid: {
+      type: DataTypes.STRING(60),
+      allowNull: true
+    },
+    merchantid: {
+      type: DataTypes.INTEGER(10).UNSIGNED,
+      allowNull: true
+    },
+    merchantuuid: {
+      type: DataTypes.STRING(60),
+      allowNull: true
+    },
+    status: {
+      type: DataTypes.INTEGER(4),
+      allowNull: true,
+      comment: '0: placed, 1: under review, 2: on delivery, 3: done delivery, 4: canceled, 5: refunded, 6: exchanged for another'
+    },
+    itemuuid: {
+      type: DataTypes.STRING(60),
+      allowNull: true
+    },
+    reason: {
+      type: DataTypes.INTEGER(4),
+      allowNull: true
+    },
+    reasonstr: {
+      type: DataTypes.STRING(60),
+      allowNull: true,
+      comment: '1: delay, 2: defect'
     }
   }, {
     sequelize,
