@@ -1,7 +1,7 @@
 /* jshint indent: 2 */
 
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('reports', {
+  return sequelize.define('likes', {
     id: {
       autoIncrement: true,
       type: DataTypes.INTEGER(11).UNSIGNED,
@@ -17,45 +17,30 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.DATE,
       allowNull: true
     },
+    objectuuid: {
+      type: DataTypes.STRING(60),
+      allowNull: true
+    },
+    objectid: {
+      type: DataTypes.INTEGER(10).UNSIGNED,
+      allowNull: true
+    },
     uid: {
       type: DataTypes.INTEGER(10).UNSIGNED,
       allowNull: true
     },
-    titlename: {
-      type: DataTypes.STRING(300),
-      allowNull: true
-    },
-    contentbody: {
-      type: DataTypes.TEXT,
-      allowNull: true
-    },
-    itemid: {
-      type: DataTypes.INTEGER(10).UNSIGNED,
-      allowNull: true
-    },
-    itemuuid: {
-      type: DataTypes.STRING(60),
-      allowNull: true
-    },
-    reviewuuid: {
-      type: DataTypes.STRING(60),
-      allowNull: true
-    },
-    reviewid: {
-      type: DataTypes.INTEGER(10).UNSIGNED,
-      allowNull: true
-    },
-    reason: {
-      type: DataTypes.STRING(100),
-      allowNull: true
-    },
-    type: {
+    status: {
       type: DataTypes.INTEGER(3).UNSIGNED,
       allowNull: true,
-      comment: '1: plagiarism, 2:slander and profanity,3:commercial, 4:hatred/violence, 5: misleading, 6:etc'
+      comment: '0: review not helpful, 1:review helpful, 2:banned, 3: reported'
+    },
+    active: {
+      type: DataTypes.INTEGER(4),
+      allowNull: true,
+      defaultValue: 1
     }
   }, {
     sequelize,
-    tableName: 'reports'
+    tableName: 'likes'
   });
 };
