@@ -1,3 +1,5 @@
+const { SERVICE_NAME , SERVICE_NAME_NOSPACES } = require("../configs/configs");
+
 const getobjtype=object=>{
     var stringConstructor = "test".constructor;
     var arrayConstructor = [].constructor;
@@ -73,6 +75,7 @@ const generate_random_track_number =_=>{
 	return str.substr( 0, pos0 ) + '-' + str.substr( pos0, pos1 ) + '-' + str.substr(pos1)
 }
 const generaterandomhex=size=>[...Array(size)].map(() => Math.floor(Math.random() * 16).toString(16)).join('')
+const generaterandomusername =_=> `${SERVICE_NAME}#${generaterandomnumber ( 10_000_000 , 99_999_999 ) }` 
 /////////////////////////////
 module.exports={
     getobjtype 
@@ -86,6 +89,7 @@ module.exports={
 	, uuidv4
 	, uuidv5
 	, generate_random_track_number 
-	, generaterandomhex 
+	, generaterandomhex
+	, generaterandomusername  
 }
 

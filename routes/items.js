@@ -105,7 +105,7 @@ router.get ( '/item/:uuid' , auth , async ( req,res)=>{
 		ismyfavorite ] = await Promise.all ( aproms ) 
 	LOGGER( `@salesinfo` , salesinfo ) 
 	let stores = []
-	let aproms02=[]
+	let aproms02=[] ,  aproms03=[]
 	LOGGER( `@inventory` , inventory )
 	let countstores = 0
 	let ratingaverage , nreviews , histogramofratings  
@@ -113,6 +113,11 @@ router.get ( '/item/:uuid' , auth , async ( req,res)=>{
 		let arrratings = reviews.map ( elem => +elem.rating )
 		ratingaverage = arrratings.reduce ( (a,b)=> +a+ +b , 0 ) / nreviews ; ratingaverage  = ratingaverage.toFixed(2)   
 		histogramofratings = histogramjs ( { data : 	arrratings , bins : [ 1,2,3,4,5,6] } ).map ( elem => elem.length ).map ( ( elem , idx ) => { return { rating: 1+ idx , count : elem } } )
+		reviews.forEach ( ( elem , idx ) => {
+			aproms03 [ idx ] = db[ 'users' ].findOne ( { raw: true , where : { id : elem.uid } , attributes : [ 'username' , 'nickname' ] } )	
+		})
+		let reviewers = await Promise.all ( aproms03 )
+		reviews = reviews.map ( ( elem  , idx ) => { return { ... elem , ...  reviewers [ idx ] } } )
 	} 
 	else { ratingaverage = null } 
 	if ( inventory && inventory.length ) {

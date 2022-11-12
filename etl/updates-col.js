@@ -9,7 +9,8 @@ const { create_uuid_via_namespace
 	, generaterandomhex
 	, generaterandomnumber
 	, generate_random_track_number
-	, uuidv4 
+	, uuidv4
+	, generaterandomusername  
  }=require('../utils/common')
 const moment=require('moment')
 let countwritten = 0
@@ -33,6 +34,18 @@ const { uniqueNamesGenerator, adjectives, colors, animals
  } = require('unique-names-generator');
 
 const main =async _=>{
+	let listusers = await db[ 'users' ].findAll ( { raw: true , where : { }  } )
+	listusers.forEach ( async user => {
+		let usernametemp = generaterandomusername ()
+		if ( user.username ) {} else {
+			await db['users'].update ( { username : usernametemp , } , { where : { id: user.id } } )
+		}
+		if ( user.nickname ) {} else {
+			await db['users'].update ( { nickname : usernametemp , } , { where : { id: user.id } } )
+		}
+	})
+}
+const main_physicaladdresses =async _=>{
 	let list = await db[ 'physicaladdresses' ].findAll ( { raw: true , where : {} } )
 	list.forEach ( async elem => {
 		await db[ 'physicaladdresses'].update ( { receiver : uniqueNamesGenerator({			dictionaries: [ adjectives, colors, animals ] , separator : ' ' })

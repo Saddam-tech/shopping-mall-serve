@@ -1,6 +1,6 @@
 const IS_ENTRY_PRICE_ON_BETTIME_OR_START_OF_MINUTE = 2; // 1 : ON_BETTIME , 2: START_OF_MINUTE
 const IPADDRESS_MY = "52.79.186.28" // 13.125.32.77";
-const SERVICE_NAME='eco green'
+const SERVICE_NAME='PURE'
 const SERVICE_NAME_CAPD = 'Eco Green'
 const SERVICE_NAME_NOSPACES= 'ECO_GREEN'
 /** const socket_receiver_ipaddresses = {

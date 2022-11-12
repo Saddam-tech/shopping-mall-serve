@@ -2,7 +2,8 @@ var express = require("express");
 const requestIp = require("request-ip");
 let { respok, resperr } = require("../utils/rest");
 const { getobjtype, generaterandomnumber 
- , getunixtimesec 
+ , getunixtimesec
+	, generaterandomusername
 } = require("../utils/common");
 const jwt = require("jsonwebtoken");
 const { auth, softauth } = require("../utils/authMiddleware");
@@ -27,7 +28,7 @@ const ISFINITE = Number.isFinite;
 const { getipaddress , getuseragent} = require("../utils/session");
 require("dotenv").config({ path: "../.env" });
 const { resolve_nettype } = require("../utils/nettypes");
-const { SERVICE_NAME_NOSPACES } = require("../configs/configs");
+const { SERVICE_NAME , SERVICE_NAME_NOSPACES } = require("../configs/configs");
 const { validateEmail } = require("../utils/validates");
 // let NETTYPE_DEF = 'BSC_MAIN NET'
 let NETTYPEID_DEF;
@@ -303,11 +304,14 @@ router.post("/signup", async (req, res) => {
   } else {
   }
   const myreferercode = await generateRefCode();
+	let usernametemp= generaterandomusername () 
   let user = await db["users"].create({
     email,
     password,
     myreferercode,
     nettype,
+		username : nickname ? nickname : usernametemp ,
+		nickname : nickname ? nickname : usernametemp
   });
   let wallet = generatewallet();
   await db["userwallets"].create({
