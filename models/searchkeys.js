@@ -1,7 +1,7 @@
 /* jshint indent: 2 */
 
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('infocategory', {
+  return sequelize.define('searchkeys', {
     id: {
       autoIncrement: true,
       type: DataTypes.INTEGER(11).UNSIGNED,
@@ -17,40 +17,30 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.DATE,
       allowNull: true
     },
-    name: {
-      type: DataTypes.STRING(400),
-      allowNull: true
-    },
-    code: {
-      type: DataTypes.STRING(20),
-      allowNull: true
-    },
-    description: {
-      type: DataTypes.STRING(300),
-      allowNull: true
-    },
-    uuid: {
-      type: DataTypes.STRING(60),
-      allowNull: true
-    },
-    registrar: {
-      type: DataTypes.STRING(60),
-      allowNull: true
-    },
-    registrarid: {
-      type: DataTypes.BIGINT,
-      allowNull: true
-    },
-    level: {
+    uid: {
       type: DataTypes.INTEGER(10).UNSIGNED,
       allowNull: true
     },
-    parent: {
+    searchkey: {
+      type: DataTypes.STRING(100),
+      allowNull: true
+    },
+    count: {
+      type: DataTypes.INTEGER(10).UNSIGNED,
+      allowNull: true,
+      defaultValue: 0
+    },
+    counthits: {
       type: DataTypes.INTEGER(10).UNSIGNED,
       allowNull: true
+    },
+    active: {
+      type: DataTypes.INTEGER(4),
+      allowNull: true,
+      defaultValue: 1
     }
   }, {
     sequelize,
-    tableName: 'infocategory'
+    tableName: 'searchkeys'
   });
 };

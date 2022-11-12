@@ -27,6 +27,7 @@ const shell = require("shelljs");
 const { storefiletoawss3 } = require("../utils/repo-s3");
 const { filehandler } = require("../utils/file-uploads");
 const { countrows_scalar } = require("../utils/db");
+const ISFINITE = Number.isFinite
 const resolvedummy=async _=>{
 	return null
 }
@@ -58,6 +59,7 @@ router.post ( '/item' , auth , async ( req,res )=>{
 				
 	})
 })
+const histogramjs = require('histogramjs' )
 router.get ( '/item/:uuid' , auth , async ( req,res)=>{
 	let { uuid } = req.params
 	let aproms=[]
@@ -106,6 +108,13 @@ router.get ( '/item/:uuid' , auth , async ( req,res)=>{
 	let aproms02=[]
 	LOGGER( `@inventory` , inventory )
 	let countstores = 0
+	let ratingaverage , nreviews , histogramofratings  
+	if ( reviews && ( nreviews = reviews.length ) ) { 
+		let arrratings = reviews.map ( elem => +elem.rating )
+		ratingaverage = arrratings.reduce ( (a,b)=> +a+ +b , 0 ) / nreviews ; ratingaverage  = ratingaverage.toFixed(2)   
+		histogramofratings = histogramjs ( { data : 	arrratings , bins : [ 1,2,3,4,5,6] } ).map ( elem => elem.length ).map ( ( elem , idx ) => { return { rating: 1+ idx , count : elem } } )
+	} 
+	else { ratingaverage = null } 
 	if ( inventory && inventory.length ) {
 		inventory.forEach ( ( elem , idx ) => {
 			aproms02 [ idx ] = db['stores'].findOne ( { raw : true ,where : { uuid : elem.storeuuid }  } )
@@ -127,21 +136,28 @@ router.get ( '/item/:uuid' , auth , async ( req,res)=>{
 		, itemdetailinfo
 		, salesinfo
 		, ismyfavorite
-		, countstores 
+		, countstores
+		, ratingaverage  
+		, histogramofratings 
 	 } } )
 })
-router.get("/list/:offset/:limit", async (req, res) => {
+router.get("/list-auth/:offset/:limit", auth , async (req, res) => {
   let { date0, date1, category, searchkey , filterkey, filterval } = req.query;
   let { offset, limit } = req.params;
+	offset = +offset
+	limit = +limit
+	if (ISFINITE ( offset ) && ISFINITE ( limit ) ) {}
+	else  { resperr ( res, messages.MSG_ARGINVALID , null , { reason : 'offset or limit' } ) ; return }
+	
   let jfilter = {};
   if (searchkey) {
     let liker = `%${searchkey}%`;
     jfilter = {
       [Op.or]: [
-        { name: { [Op.or]: liker } },
-        { description: { [Op.or]: liker } },
-        { manufacturername: { [Op.or]: liker } },
-        { keywords: { [Op.or]: liker } },
+       { name: 							{ [Op.like]: liker } },
+        { description: 			{ [Op.like]: liker } },
+        { manufacturername: { [Op.like]: liker } },
+        { keywords: 				{ [Op.like]: liker } },
         //			, { category : { [Op.or] : liker }}
       ],
     };
@@ -154,8 +170,64 @@ router.get("/list/:offset/:limit", async (req, res) => {
     where: {
       ...jfilter,
     },
-    // offset,
-    // limit,
+    offset,
+    limit,
+  });
+  let count = await countrows_scalar("items", jfilter);
+	let aproms= []
+	if ( list && list.length ) {
+		list.forEach ( elem => {
+			aproms[ aproms.length ] =db['promotions'].findAll ( { raw: true, where : { itemuuid : elem.uuid } } )
+		})
+		let arrpromotions = await Promise.all ( aproms)
+		 list = list.map ( ( elem , idx ) => { return { ... elem , promotions : arrpromotions [ idx ] } } )
+	  respok(res, null, null, { list, count , payload : { count }  });
+	} else {
+	  respok(res, null, null, { list : [] , count : 0 , payload : { count } });
+	}
+		{
+		if ( searchkey ) {} else { return }	
+			let { id : uid } = req.decoded
+			let respkey = await db[ 'searchkeys' ].findOne ( { raw : true , where : { uid, searchkey } } )
+			if ( respkey ) {
+				await db[ 'searchkeys' ].update ( { count : 1 + respkey.count , counthits : count } , { where : { id : respkey.id ,} } )
+			}
+			else {
+				await db[ 'searchkeys' ].create ( {  uid , searchkey , counthits : count} )
+			}
+		}
+});
+
+router.get("/list/:offset/:limit", async (req, res) => {
+  let { date0, date1, category, searchkey , filterkey, filterval } = req.query;
+  let { offset, limit } = req.params;
+	offset = +offset
+	limit = +limit
+	if (ISFINITE ( offset ) && ISFINITE ( limit ) ) {}
+	else  { resperr ( res, messages.MSG_ARGINVALID , null , { reason : 'offset or limit' } ) ; return }
+  let jfilter = {};
+  if (searchkey) {
+    let liker = `%${searchkey}%`;
+    jfilter = {
+      [Op.or]: [
+        { name: 							{ [Op.like]: liker } },
+        { description: 				{ [Op.like]: liker } },
+        { manufacturername: 	{ [Op.like]: liker } },
+        { keywords: 					{ [Op.like]: liker } },
+        //			, { category : { [Op.or] : liker }}
+      ],
+    };
+  } else {
+  }
+	if ( filterkey && filterval ) { jfilter [ filterkey ] = filterval }
+	else {} 
+  let list = await db["items"].findAll({
+    raw: true,
+    where: {
+      ...jfilter,
+    },
+    offset,
+    limit,
   });
   let count = await countrows_scalar("items", jfilter);
 	let aproms= []
@@ -163,7 +235,7 @@ router.get("/list/:offset/:limit", async (req, res) => {
 		aproms[ aproms.length ] =db['promotions'].findAll ( { raw: true, where : { itemuuid : elem.uuid } } )
 	})
 	let arrpromotions = await Promise.all ( aproms)
-	 list = list.map ( ( elem , idx ) => { return { ... elem , promotions : arrpromotions [ idx ] } } )
+	list = list.map ( ( elem , idx ) => { return { ... elem , promotions : arrpromotions [ idx ] } } )
   respok(res, null, null, { list, count });
 });
 router.put(  "/item/:uuid",

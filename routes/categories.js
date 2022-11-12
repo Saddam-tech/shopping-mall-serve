@@ -30,6 +30,20 @@ const { countrows_scalar } = require("../utils/db");
 const resolvedummy=async _=>{
 	return null
 }
+router.get ( '/children-of-key/:key' , async ( req,res)=>{
+	let { key } = req.params
+	elemfound = null
+	recurse_find ( categories , +key )
+	let list 
+	if ( elemfound ) {
+		list = elemfound.child.map ( elem => {
+			let { name , displayItemCategoryCode } = elem 
+			return { name , displayItemCategoryCode}
+		})
+	} else { list = []
+	}
+	respok ( res, null, null, { list } )
+})
 router.get ( '/level/0' , async ( req,res)=>{
 //	let list = categories.map ( elem => elem.displayItemCategoryCode ) 
 	let list = categories.child.map ( elem => { 
@@ -41,13 +55,28 @@ router.get ( '/level/0' , async ( req,res)=>{
 
 module.exports = router;
 const PARSER = JSON.parse
-
 let categories
-const init=_=>{
-//	const fncat = '../data/coupang-item-categories.json' 
-const fncat = '/home/ubuntu/coupang/coupang-categories.json'
+const init=_=>{	//	const fncat = '../data/coupang-item-categories.json' 
+	const fncat = '/home/ubuntu/coupang/coupang-categories.json'
 	let strbuf = fs.readFileSync ( fncat ).toString ()
 	categories = PARSER ( strbuf ).data
+}
+let elemfound
+const recurse_find = ( elem , searchkey )=>{
+	let { child , displayItemCategoryCode } = elem
+	if ( displayItemCategoryCode == searchkey ) {
+		elemfound = elem 
+	} else if ( child && child.length ) { 
+		child.forEach ( child1 => {
+			recurse_find( child1 , searchkey ) 
+		 } )
+	} else { return }
+}
+const recurse =elem=>{
+	let { name , child , displayItemCategoryCode } = elem
+	if ( child && child.length ) {
+		child.forEach ( child1 => { recurse ( child1 ) } )
+	} 
 }
 init()
 // insert into networktoken (name, decimal, contractaddress,networkidnumber, nettype) values ();

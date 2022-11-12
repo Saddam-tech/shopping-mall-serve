@@ -143,7 +143,7 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: true
     },
     price: {
-      type: DataTypes.BIGINT,
+      type: DataTypes.STRING(20),
       allowNull: true
     },
     ispromotion: {
@@ -173,6 +173,14 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(60),
       allowNull: true,
       comment: 'msrp units'
+    },
+    isnew: {
+      type: DataTypes.INTEGER(3).UNSIGNED,
+      allowNull: true
+    },
+    categorystr: {
+      type: DataTypes.STRING(100),
+      allowNull: true
     }
   }, {
     sequelize,
