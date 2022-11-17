@@ -41,19 +41,29 @@ router.put ( '/:tablename/:uuid' ,
 
 	if ( req.files ) {} 
 	else { resperr ( res, messages.MSG_FILEMISSING ) ; return } 
-	let { image00 , image01 , image02 , image03 , image04 } = req.files
-	let arrimagepaths = [ image00 , image01 , image02 , image03 , image04 ]
+//	let { image00 , image01 , image02 , image03 , image04 } = req.files
+	let arrimagepaths = [ 
+		req?.files?.image00 , 
+		req?.files?.image01 , 
+		req?.files?.image02 , 
+		req?.files?.image03 , 
+		req?.files?.image04 ]
 	let count = 0
+	let jupdatestoreturn = {}
 	for ( let idx = 0 ; idx < arrimagepaths.length ; idx ++ ) {
 		let file
 		if ( file = arrimagepaths [ idx ] ) {
 			let urltos3	= await storefiletoawss3 ( file.path )  
 			let jupdates={}
 			jupdates [ `imageurl0${idx}` ] = urltos3
+			jupdatestoreturn [ `imageurl0${idx}` ] = urltos3
 			await db[ tablename ].update ( { ... jupdates } , { where : { id : resprow.id } } )
 			++ count
 		} else { continue } 
 	}
-	respok ( res , null , null , { respdata : { count , timedeltainmili : moment().valueOf() - m0 } }  ) 
+	respok ( res , null , null , { respdata : { count 
+		, timedeltainmili : moment().valueOf() - m0 
+		, urls : jupdatestoreturn 
+		} }  ) 
 }) 
 module.exports = router;

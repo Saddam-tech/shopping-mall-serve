@@ -15,7 +15,7 @@ var router = express.Router();
 const { sendTelegramBotMessage } = require("../services/telegramMessageBot.js");
 const { sendeth } = require("../services/sendeth");
 const { supported_net } = require("../configs/configweb3");
-const { convaj, uuidv4 } = require("../utils/common");
+const { convaj, uuidv4 , getobjtype  } = require("../utils/common");
 const { ADDRESSES } = require("../configs/addresses");
 const { getethbalance } = require("../utils/eth");
 const { resolve_nettype } = require("../utils/nettypes");
@@ -31,7 +31,7 @@ const ISFINITE = Number.isFinite
 const resolvedummy=async _=>{
 	return null
 }
-router.post ( '/item' , auth , async ( req,res )=>{
+/** router.p ost ( '/item' , auth , async ( req,res )=>{
 	LOGGER(`@req.decoded`, req.decoded);
   let { id : uid , isadmin } = req.decoded;
   if ( uid) {
@@ -58,13 +58,18 @@ router.post ( '/item' , auth , async ( req,res )=>{
 	respok ( res, null,null , { 
 				
 	})
-})
+}) */
 const histogramjs = require('histogramjs' )
-router.get ( '/item/:uuid' , auth , async ( req,res)=>{
+// router.get ( '/item/:uuid' , auth , async ( req,res)=>{
+router.get ( '/item/:uuid' , softauth , async ( req,res)=>{
 	let { uuid } = req.params
 	let aproms=[]
 	let itemuuid = uuid
-	let { id : uid} = req.decoded
+	let uid
+	let { decoded } =req
+	if ( decoded && decoded.id ) {	uid = decoded.id  }
+	else { uid = null }
+//	let { id : uid} = req.decoded
 /**	aproms[ aproms.length ] = db[ 'items' ].findOne ( { raw : true , where : { uuid } } ) // 0
 	aproms[ aproms.length ] = db[ 'promotions' ].findOne ( { raw: true, where : { itemuuid } } ) // 1 
 	aproms[ aproms.length ] = db[ 'reviews' ].findAll ( { raw: true , where : { itemuuid } } ) // 2
@@ -105,7 +110,7 @@ router.get ( '/item/:uuid' , auth , async ( req,res)=>{
 		ismyfavorite ] = await Promise.all ( aproms ) 
 	LOGGER( `@salesinfo` , salesinfo ) 
 	let stores = []
-	let aproms02=[] ,  aproms03=[]
+	let aproms02=[] ,  aproms03=[], aproms04= []
 	LOGGER( `@inventory` , inventory )
 	let countstores = 0
 	let ratingaverage , nreviews , histogramofratings  
@@ -114,10 +119,12 @@ router.get ( '/item/:uuid' , auth , async ( req,res)=>{
 		ratingaverage = arrratings.reduce ( (a,b)=> +a+ +b , 0 ) / nreviews ; ratingaverage  = ratingaverage.toFixed(2)   
 		histogramofratings = histogramjs ( { data : 	arrratings , bins : [ 1,2,3,4,5,6] } ).map ( elem => elem.length ).map ( ( elem , idx ) => { return { rating: 1+ idx , count : elem } } )
 		reviews.forEach ( ( elem , idx ) => {
-			aproms03 [ idx ] = db[ 'users' ].findOne ( { raw: true , where : { id : elem.uid } , attributes : [ 'username' , 'nickname' ] } )	
+			aproms03 [ idx ] = db[ 'users' ].findOne ( { raw : true , where : { id : elem.uid } , attributes : [ 'username' , 'nickname' ] } )
+			aproms04 [ idx ] = db[ 'likes' ].findOne ( { raw : true , where : { uuid : elem.uuid } , attributes : ['status' ]  } )
 		})
 		let reviewers = await Promise.all ( aproms03 )
-		reviews = reviews.map ( ( elem  , idx ) => { return { ... elem , ...  reviewers [ idx ] } } )
+		let likesstatus=await Promise.all ( aproms04 )
+		reviews = reviews.map ( ( elem  , idx ) => { return { ... elem , ...  reviewers [ idx ] , ishelpful : likesstatus [ idx ] } }  )
 	} 
 	else { ratingaverage = null } 
 	if ( inventory && inventory.length ) {
@@ -382,6 +389,7 @@ router.post("/item", auth, async (req, res) => {
     resperr(res, messages.MSG_PLEASE_LOGIN);
     return;
   } //	let { isadmin } = await db[ 'users' ].findOne ( {raw : true , where : { id } } )
+	LOGGER( req.body )
   if (isadmin && isadmin >= MIN_ADMIN_LEVEL) {
   } else {
     resperr(res, messages.MSG_NOTPRIVILEGED);
@@ -392,18 +400,49 @@ router.post("/item", auth, async (req, res) => {
     resperr(res, messages.MSG_ARGMISSING);
     return;
   }
-  let { name, manufacturername, manufacturerid, mfrid } = req.body;
+  let { name, 
+		manufacturername, 
+		manufacturerid, 
+		mfrid
+		, description
+		, categoryid
+		, subcategoryid
+		, keywords
+		, price
+		, options 
+	} = req.body;
   if (name) {
   } else {
     resperr(res, messages.MSG_ARGMISSING);
     return;
   }
+	const STRINGER = JSON.stringify
+	KEYS( req.body ).forEach ( key => {
+		let value = req.body[ key ]
+		let strvalue
+		if ( value  ) {}
+		else { delete req.body[ key ] ; return }
+		switch ( getobjtype ( value ) ) {
+			case 'String' : strvalue = value ; break
+			case 'Object' : strvalue = STRINGER ( value ) ; break
+		} 
+		if ( strvalue && strvalue.length ) {}
+		else { delete req.body [ key ] }
+	})
+	if ( options ) {
+		options = { ... req.body.options }
+		delete req.body.options
+	}
   let uuid = uuidv4();
   let resp = await db["items"].create({
     sellrid: id,
     uuid,
     ...req.body,
   });
+	await db[ 'iteminfo' ].create ( {
+		itemuuid : uuid
+		, options : STRINGER( options )
+	})
   respok(res, null, null, {
     uuid,
     respdata: {

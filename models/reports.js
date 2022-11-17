@@ -53,6 +53,10 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.INTEGER(3).UNSIGNED,
       allowNull: true,
       comment: '1: plagiarism, 2:slander and profanity,3:commercial, 4:hatred/violence, 5: misleading, 6:etc'
+    },
+    typestr: {
+      type: DataTypes.STRING(60),
+      allowNull: true
     }
   }, {
     sequelize,

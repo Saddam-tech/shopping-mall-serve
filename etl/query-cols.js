@@ -5,7 +5,7 @@ let { countrows_scalar } = require( '../utils/db')
 
 const main=async _=>{
   let resptables =await db.sequelize.query(`show tables`) // .then(resp0=>{resp=resp0;console.log(resp[0].length )} )
-  let list = resptables[0].map(elem=>elem['Tables_in_binopt'] ).sort ( (a,b)=>a.localeCompare ( b)) 
+  let list = resptables[0].map(elem=>elem['Tables_in_cosho'] ).sort ( (a,b)=>a.localeCompare ( b)) 
 //  let list = resptables[0].map(elem=>elem['Tables_in_nipsethtestnet02'] ).sort ( (a,b)=>a.localeCompare ( b))
 //  let list = resptables[0].map(elem=>elem['Tables_in_nipsethtestnet02'] ).sort ( (a,b)=>a > b? +1:-1)
 //  resptables[0].forEach ( async ( elem  , idx ) =>{

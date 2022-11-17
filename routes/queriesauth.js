@@ -78,7 +78,7 @@ router.put ( '/toggle/:tablename' , auth , async ( req,res)=>{ LOGGER( req.body 
 	if ( uid ) {}
 	else { resperr ( res, messages.MSG_PLEASELOGIN ) ; return } 
 	LOGGER( req.body ) 
-	let { key , targetcolumnname } = req.body
+	let { key , targetcolumnname, status } = req.body
 	if ( key && KEYS ( key ).length && targetcolumnname) {}
 	else { resperr( res, messages.MSG_ARGMISSING ) ; return }
 	let { tablename } = req.params
@@ -88,20 +88,37 @@ router.put ( '/toggle/:tablename' , auth , async ( req,res)=>{ LOGGER( req.body 
 	let targetstatus 
 	let resprow = await db[ tablename ] .findOne ( { raw: true , where : { ... key ,uid } } )
 	if ( resprow ) {
-		let jdata= {}
-		targetstatus = 1 ^ +resprow[ targetcolumnname ]
-		jdata [ targetcolumnname ] = targetstatus 
-		await db[ tablename ].update ( { ... jdata } , { where : { id : resprow.id } } )
+		if ( ISFINITE ( +status ) ) {
+			let jdata = {}
+			jdata [ targetcolumnname ] = status
+			await db[ tablename ].update ( { ... jdata } , { where : { id : resprow.id } } )
+		}
+		else { 
+			let jdata= {}
+			targetstatus = 1 ^ +resprow[ targetcolumnname ]
+			jdata [ targetcolumnname ] = targetstatus 
+			await db[ tablename ].update ( { ... jdata } , { where : { id : resprow.id } } )
+		}
 	}
 	else {
-		let jdata={}
-		targetstatus = 1 
-		jdata[ targetcolumnname ]  = targetstatus 
-		await db[ tablename ].create ( {
-			... key 
-			, uid
-			, ... jdata
-		} )
+		if ( ISFINITE( +status ) ) {
+			let jdata= {}
+			jdata [ targetcolumnname ] = status
+			await db[ tablename ].create ( {
+				... key 
+				, uid
+				, ... jdata	
+			})
+		} else { 
+			let jdata={}
+			targetstatus = 1 
+			jdata[ targetcolumnname ]  = targetstatus 
+			await db[ tablename ].create ( {
+				... key 
+				, uid
+				, ... jdata
+			} )
+		}
 	}
 	respok ( res , null, null, { respdata : { result : targetstatus , status : targetstatus } } )
 })
@@ -110,7 +127,7 @@ router.post ( '/create-or-update/:tablename' , auth , async ( req,res)=>{
 	if ( uid ) { }
 	else { resperr( res, messages.MSG_PLEASELOGIN ) ; return }
 	let { tablename } = req.params
-	let respex = await tablexists ( tablename ) 
+	let respex = await tableexists ( tablename ) 
 	if ( respex ) {}
 	else { resperr ( res, messages.MSG_DATANOTFOUND ) ; return }
 	let { key , updatevalues } = req.body 
