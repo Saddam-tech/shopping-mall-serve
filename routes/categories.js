@@ -32,6 +32,9 @@ const resolvedummy=async _=>{
 }
 router.get ( '/children-of-key/:key' , async ( req,res)=>{
 	let { key } = req.params
+//	key = key.replace(/\s/g, "")
+	// key = key.replace ( /\n/g, '')
+	key = key.replace ( /[\n\r\s]/g, '')
 	elemfound = null
 	recurse_find ( categories , +key )
 	let list 
